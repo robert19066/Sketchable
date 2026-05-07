@@ -1,3 +1,15 @@
+Metadata-Version: 2.4
+Name: pypen
+Version: 1.0.0
+Summary: An extension of Turtle
+Home-page: https://github.com/robert19066/PyDraw
+Author: robert19066
+License: AGPL
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Dynamic: license-file
+
 # Pydraw
 _note: yes, I know my previous projects were vibe-coded, I am dissapointed of myself. BUTTTT I've decided to re-awaken my developer
 powers and made this library. Yes. I build it. I didn't use AI at **all**_

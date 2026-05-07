@@ -1,0 +1,11 @@
+LICENSE.txt
+README.md
+pyproject.toml
+setup.cfg
+Core/__init__.py
+Core/pypen.py
+Core/shapes.py
+pypen_turtle.egg-info/PKG-INFO
+pypen_turtle.egg-info/SOURCES.txt
+pypen_turtle.egg-info/dependency_links.txt
+pypen_turtle.egg-info/top_level.txt
