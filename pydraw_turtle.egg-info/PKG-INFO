@@ -1,9 +1,9 @@
 Metadata-Version: 2.4
-Name: pypen
+Name: pydraw-turtle
 Version: 1.0.0
 Summary: An extension of Turtle
 Home-page: https://github.com/robert19066/PyDraw
-Author: robert19066
+Author: robert19066_alt
 License: AGPL
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
