@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>Relish</Name>
     <RootNamespace>Relish</RootNamespace>
+    <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,9 +22,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\shapes.py" />
-    <Compile Include="Core\pypen.py" />
-    <Compile Include="Core\__init__.py" />
+    <Compile Include="core\shapes.py" />
+    <Compile Include="core\pypen.py" />
+    <Compile Include="core\__init__.py" />
     <Compile Include="test.py" />
   </ItemGroup>
   <ItemGroup>
@@ -31,7 +32,7 @@
     <Content Include="setup.cfg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\" />
+    <Folder Include="core\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

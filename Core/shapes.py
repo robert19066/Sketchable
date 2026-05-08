@@ -3,28 +3,117 @@
 licenced under the GNU Affero General Public License v3.0 (AGPL3)
 This file is used for all the datatypes.
 
-$$$$$$$\            $$$$$$$\                                   
-$$  __$$\           $$  __$$\                                  
-$$ |  $$ |$$\   $$\ $$ |  $$ | $$$$$$\  $$$$$$\  $$\  $$\  $$\ 
-$$$$$$$  |$$ |  $$ |$$ |  $$ |$$  __$$\ \____$$\ $$ | $$ | $$ |
-$$  ____/ $$ |  $$ |$$ |  $$ |$$ |  \__|$$$$$$$ |$$ | $$ | $$ |
-$$ |      $$ |  $$ |$$ |  $$ |$$ |     $$  __$$ |$$ | $$ | $$ |
-$$ |      \$$$$$$$ |$$$$$$$  |$$ |     \$$$$$$$ |\$$$$$\$$$$  |
-\__|       \____$$ |\_______/ \__|      \_______| \_____\____/ 
-          $$\   $$ |                                           
-          \$$$$$$  |                                           
-           \______/
-
 This code was written mostly by me, yet I used AI to add math to Triangle, Square and VertexSquare. Also I used it for function descriptions. Rest of the logic was made by me.
 Yes, it defies the "no ai" rule, BUT i didn't vibe code, i just used it to tidy up my code, and eliminate inconsistencies across all shapes. 
+
+Yes but you mind ask, "BUT YOU DON'T KNOW GEOMETRY?!". dumbasses i am 6th grade HOW THE FUQ I AM SUPPOSED TO KNOW SHOELACE FORMULA?!
+or the other complicated shi.
+So please, no hate. Trying to quit vibe coding.
+
+Changelog - V1.2:
+- Support for movement and unified draw()
 """
 
-from math import pi, sqrt, tan
-from pypen import PyPen
+from math import pi, sqrt, tan, cos, sin, radians
 
 
-class Vertex:
-    def __init__(self, x, y):
+# ── helpers ───────────────────────────────────────────────────────────────────
+
+def _side(a, b) -> float:
+    """Euclidean distance between two Vertex objects."""
+    return sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2)
+
+
+# ── Moveable ──────────────────────────────────────────────────────────────────
+
+class Moveable:
+    """
+    Base class for all shapes.
+    Provides position, rotation, and scale — applied as Scale → Rotate → Translate.
+    All methods return self so they can be chained:
+        Square(60).move_to(100, 100).rotate_by(45).set_scale(2)
+    """
+
+    def __init__(self):
+        self._pos   = (0.0, 0.0)
+        self._angle = 0.0          # degrees, CCW
+        self._scale = 1.0
+
+    # ── position ──
+    def move_to(self, x: float, y: float) -> "Moveable":
+        """Set world position to absolute (x, y)."""
+        self._pos = (float(x), float(y))
+        return self
+
+    def move_by(self, dx: float, dy: float) -> "Moveable":
+        """Shift current position by (dx, dy)."""
+        self._pos = (self._pos[0] + dx, self._pos[1] + dy)
+        return self
+
+    # ── rotation ──
+    def rotate_to(self, angle: float) -> "Moveable":
+        """Set rotation to an absolute angle in degrees (CCW)."""
+        self._angle = angle % 360
+        return self
+
+    def rotate_by(self, delta: float) -> "Moveable":
+        """Add delta degrees (CCW) to current rotation."""
+        self._angle = (self._angle + delta) % 360
+        return self
+
+    # ── scale ──
+    def set_scale(self, factor: float) -> "Moveable":
+        """Set uniform scale (1.0 = original size)."""
+        if factor <= 0:
+            raise ValueError("Scale must be positive.")
+        self._scale = factor
+        return self
+
+    def scale_by(self, factor: float) -> "Moveable":
+        """Multiply current scale by factor."""
+        if factor <= 0:
+            raise ValueError("Scale must be positive.")
+        self._scale *= factor
+        return self
+
+    # ── reset ──
+    def reset_transform(self) -> "Moveable":
+        """Reset position, rotation, and scale to defaults."""
+        self._pos   = (0.0, 0.0)
+        self._angle = 0.0
+        self._scale = 1.0
+        return self
+
+    # ── getters ──
+    @property
+    def position(self) -> tuple: return self._pos
+
+    @property
+    def angle(self) -> float:
+        return self._angle
+
+    @property
+    def scale(self) -> float: return self._scale
+
+    # ── transform ──
+    def _apply_transform(self, pts: list) -> list:
+        """Apply Scale → Rotate → Translate to a list of (x, y) tuples."""
+        rad  = radians(self._angle)
+        c, s = cos(rad), sin(rad)
+        tx, ty = self._pos
+        result = []
+        for (x, y) in pts:
+            x *= self._scale
+            y *= self._scale
+            result.append((x * c - y * s + tx,
+                           x * s + y * c + ty))
+        return result
+
+
+# ── Vertex ────────────────────────────────────────────────────────────────────
+
+class Vertex(Moveable):
+    def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
 
@@ -34,87 +123,83 @@ class Vertex:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
-    def getvX(self):
-        return self.x
-
-    def getvY(self):
-        return self.y
+    def getvX(self): return self.x
+    def getvY(self): return self.y
 
 
+# ── Line ──────────────────────────────────────────────────────────────────────
 
-def _side(a: Vertex, b: Vertex) -> float:
-    """Euclidean distance between two vertices."""
-    return sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2)
+class Line(Moveable):
+    """A line segment between two vertices."""
 
-def _check_pen(pen):
-    """Raise if *pen* is not a valid PyPen instance."""
-    if not isinstance(pen, PyPen):
-        raise TypeError("PYPEN ERR: You must pass a PyPen instance.")
+    def __init__(self, start: Vertex, end: Vertex):
+        self.start = start
+        self.end   = end
+
+    def __repr__(self):
+        return f"Line({self.start} -> {self.end})"
+
+    def get_vertices(self) -> list:
+        # Lines are open — no closing point added.
+        return [(self.start.x, self.start.y),
+                (self.end.x,   self.end.y)]
+
+    # ── math ──
+    def length(self) -> float:
+        return _side(self.start, self.end)
+
+    def midpoint(self) -> Vertex:
+        return Vertex((self.start.x + self.end.x) / 2,
+                      (self.start.y + self.end.y) / 2)
+
+    def slope(self) -> float:
+        dx = self.end.x - self.start.x
+        if dx == 0:
+            raise ZeroDivisionError("Line is vertical — slope undefined.")
+        return (self.end.y - self.start.y) / dx
 
 
+# ── Circle ────────────────────────────────────────────────────────────────────
 
 class Circle:
     def __init__(self, center: Vertex, radius: float):
         if not isinstance(center, Vertex):
-            raise TypeError("PYPEN ERR: center must be a Vertex.")
+            raise TypeError("center must be a Vertex.")
         self.center = center
         self.radius = radius
 
     def __repr__(self):
-        return (f"Circle(x={self.center.getvX()}, y={self.center.getvY()}, "
-                f"radius={self.radius})")
+        return f"Circle(center={self.center}, radius={self.radius})"
 
     def __eq__(self, other):
-        return (self.center == other.center and self.radius == other.radius)
+        return self.center == other.center and self.radius == other.radius
+
+    def get_vertices(self, steps: int = 72) -> list:
+        """Approximate the circle as *steps* points (closed)."""
+        pts = []
+        for i in range(steps + 1):
+            a = 2 * pi * i / steps
+            pts.append((self.center.x + self.radius * cos(a),
+                        self.center.y + self.radius * sin(a)))
+        return pts
 
     # ── getters ──
-    def getX(self):
-        """Returns the x coordinate of the circle's center."""
-        return self.center.getvX()
-
-    def getY(self):
-        """Returns the y coordinate of the circle's center."""
-        return self.center.getvY()          # BUG FIX: was self.y
-
-    def getRadius(self):
-        """Returns the radius."""
-        return self.radius
+    def getX(self):      return self.center.getvX()
+    def getY(self):      return self.center.getvY()
+    def getRadius(self): return self.radius
 
     # ── math ──
-    def area(self):
-        """Returns the circle's area."""
-        return pi * self.radius ** 2
-
-    def circ(self):
-        """Returns the circle's circumference."""
-        return 2 * pi * self.radius
-
-    def diam(self):
-        """Returns the circle's diameter."""
-        return self.radius * 2
+    def area(self) -> float:   return pi * self.radius ** 2
+    def circ(self) -> float:   return 2 * pi * self.radius
+    def diam(self) -> float:   return self.radius * 2
 
     def contains_point(self, vertex: Vertex) -> bool:
-        """Returns True if *vertex* lies inside (or on) the circle."""
         dx = vertex.getvX() - self.center.getvX()
         dy = vertex.getvY() - self.center.getvY()
         return dx * dx + dy * dy <= self.radius ** 2
 
-    # ── draw ──
-    def draw(self, pen, color="black", fill=False):
-        """Draw the circle.  Pass the PyPen instance."""
-        _check_pen(pen)
-        pen.stopDrawing()
-        pen._turtle.goto(self.center.getvX(),
-                         self.center.getvY() - self.radius)
-        pen.startDrawing()
-        if fill:
-            pen.initFill(color)
-        pen._turtle.circle(self.radius)
-        if fill:
-            pen.endFill()
 
-
-
+# ── Triangle ──────────────────────────────────────────────────────────────────
 
 class Triangle:
     def __init__(self, v1: Vertex, v2: Vertex, v3: Vertex):
@@ -126,101 +211,68 @@ class Triangle:
         return f"Triangle({self.v1}, {self.v2}, {self.v3})"
 
     def __eq__(self, other):
-        return (self.v1 == other.v1 and
-                self.v2 == other.v2 and
-                self.v3 == other.v3)
+        return self.v1 == other.v1 and self.v2 == other.v2 and self.v3 == other.v3
+
+    def get_vertices(self) -> list:
+        return [(self.v1.x, self.v1.y),
+                (self.v2.x, self.v2.y),
+                (self.v3.x, self.v3.y)]
 
     # ── math ──
     def side_lengths(self) -> tuple:
-        """Returns the three side lengths (a, b, c)."""
-        a = _side(self.v1, self.v2)
-        b = _side(self.v2, self.v3)
-        c = _side(self.v3, self.v1)
-        return a, b, c
+        return (_side(self.v1, self.v2),
+                _side(self.v2, self.v3),
+                _side(self.v3, self.v1))
 
     def perimeter(self) -> float:
-        """Returns the perimeter."""
         return sum(self.side_lengths())
 
     def area(self) -> float:
-        """Returns the area using Heron's formula."""
         a, b, c = self.side_lengths()
         s = (a + b + c) / 2
         return sqrt(s * (s - a) * (s - b) * (s - c))
 
     def is_equilateral(self, tol=1e-9) -> bool:
-        """Returns True if all three sides are equal."""
         a, b, c = self.side_lengths()
         return abs(a - b) < tol and abs(b - c) < tol
 
     def is_isosceles(self, tol=1e-9) -> bool:
-        """Returns True if at least two sides are equal."""
         a, b, c = self.side_lengths()
-        return (abs(a - b) < tol or
-                abs(b - c) < tol or
-                abs(a - c) < tol)
+        return abs(a - b) < tol or abs(b - c) < tol or abs(a - c) < tol
 
     def is_right(self, tol=1e-9) -> bool:
-        """Returns True if the triangle has a right angle (Pythagorean check)."""
-        sides = sorted(self.side_lengths())
-        a, b, c = sides
+        a, b, c = sorted(self.side_lengths())
         return abs(a ** 2 + b ** 2 - c ** 2) < tol
 
 
-    def draw(self, pen):
-        """Draw the triangle."""
-        _check_pen(pen)
-        pen.stopDrawing()
-        pen.tp(self.v1.x, self.v1.y)
-        pen.startDrawing()
-        pen.tp(self.v2.x, self.v2.y)   
-        pen.tp(self.v3.x, self.v3.y)
-        pen.tp(self.v1.x, self.v1.y)
+# ── Square ────────────────────────────────────────────────────────────────────
 
+class Square(Moveable):
+    """Axis-aligned square. Vertices are generated from the local origin (0, 0).
+    Use Movement to position it in the world."""
 
-
-
-class Square:
-    """
-    Axis-aligned square defined by its side length.
-    For a rotated square use VertexSquare.
-    """
-    def __init__(self, side: float):
+    def __init__(self, side):
+        super().__init__()   # <- THIS is required
         self.side = side
 
     def __repr__(self):
         return f"Square(side={self.side})"
 
+    def get_vertices(self) -> list:
+        s = self.side
+        return [(0, 0), (s, 0), (s, s), (0, s)]
+
     # ── math ──
-    def area(self) -> float:
-        """Returns the area."""
-        return self.side ** 2
-
-    def perimeter(self) -> float:
-        """Returns the perimeter."""
-        return 4 * self.side
-
-    def diagonal(self) -> float:
-        """Returns the length of a diagonal."""
-        return self.side * sqrt(2)
-
-    # ── draw ──
-    def draw(self, pen):
-        """Draw the square."""
-        _check_pen(pen)
-        pen.startDrawing()             
-        for _ in range(4):
-            pen.move(self.side)
-            pen.rotate(90)
+    def area(self) -> float:      return self.side ** 2
+    def perimeter(self) -> float: return 4 * self.side
+    def diagonal(self) -> float:  return self.side * sqrt(2)
 
 
+# ── VertexSquare ──────────────────────────────────────────────────────────────
 
+class VertexSquare(Moveable):
+    """Quadrilateral defined by 4 explicit vertices (supports rotation/skew)."""
 
-class VertexSquare:
-    """
-    Square (or any quadrilateral) defined by 4 explicit vertices.
-    Better for rotated or skewed squares.
-    """
     def __init__(self, v1: Vertex, v2: Vertex, v3: Vertex, v4: Vertex):
         self.v1 = v1
         self.v2 = v2
@@ -230,233 +282,101 @@ class VertexSquare:
     def __repr__(self):
         return f"VertexSquare({self.v1}, {self.v2}, {self.v3}, {self.v4})"
 
-    
+    def get_vertices(self) -> list:
+        return [(self.v1.x, self.v1.y), (self.v2.x, self.v2.y),
+                (self.v3.x, self.v3.y), (self.v4.x, self.v4.y)]
+
+    # ── math ──
     def side_lengths(self) -> tuple:
-        """Returns the four side lengths."""
-        return (_side(self.v1, self.v2),
-                _side(self.v2, self.v3),
-                _side(self.v3, self.v4),
-                _side(self.v4, self.v1))
+        return (_side(self.v1, self.v2), _side(self.v2, self.v3),
+                _side(self.v3, self.v4), _side(self.v4, self.v1))
 
     def perimeter(self) -> float:
-        """Returns the perimeter."""
         return sum(self.side_lengths())
 
     def area(self) -> float:
-        """
-        Returns the area using the Shoelace formula.
-        Works for any non-self-intersecting quadrilateral.
-        """
         verts = [self.v1, self.v2, self.v3, self.v4]
         n = len(verts)
-        total = 0.0
-        for i in range(n):
-            j = (i + 1) % n
-            total += verts[i].x * verts[j].y
-            total -= verts[j].x * verts[i].y
+        total = sum(verts[i].x * verts[(i+1)%n].y -
+                    verts[(i+1)%n].x * verts[i].y for i in range(n))
         return abs(total) / 2
 
-    
-    def draw(self, pen):
-        """Draw the vertex-defined square."""
-        _check_pen(pen)
-        pen.stopDrawing()
-        pen.tp(self.v1.x, self.v1.y)
-        pen.startDrawing()
-        pen.tp(self.v2.x, self.v2.y)
-        pen.tp(self.v3.x, self.v3.y)
-        pen.tp(self.v4.x, self.v4.y)
-        pen.tp(self.v1.x, self.v1.y)
 
-
-
-class Rectangle:
-    """Axis-aligned rectangle defined by its width and height."""
-
-    def __init__(self, width: float, height: float):
-        self.width = width
-        self.height = height
-
-    def __repr__(self):
-        return f"Rectangle(width={self.width}, height={self.height})"
-
-    def area(self) -> float:
-        """Returns the area."""
-        return self.width * self.height
-
-    def perimeter(self) -> float:
-        """Returns the perimeter."""
-        return 2 * (self.width + self.height)
-
-    def diagonal(self) -> float:
-        """Returns the length of a diagonal."""
-        return sqrt(self.width ** 2 + self.height ** 2)
-
-    def draw(self, pen):
-        """Draw the rectangle."""
-        _check_pen(pen)
-        pen.startDrawing()
-        sides = [self.width, self.height, self.width, self.height]
-        for side in sides:
-            pen.move(side)
-            pen.rotate(90)
-
-
-
+# ── Ellipse ───────────────────────────────────────────────────────────────────
 
 class Ellipse:
-    """
-    Ellipse defined by its center vertex and semi-axes a (horizontal)
-    and b (vertical).
-    """
+    """Ellipse defined by center Vertex, semi-axis a (horizontal), b (vertical)."""
 
     def __init__(self, center: Vertex, a: float, b: float):
         if not isinstance(center, Vertex):
-            raise TypeError("PYPEN ERR: center must be a Vertex.")
+            raise TypeError("center must be a Vertex.")
         self.center = center
-        self.a = a   # semi-major axis
-        self.b = b   # semi-minor axis
+        self.a = a
+        self.b = b
 
     def __repr__(self):
-        return (f"Ellipse(center={self.center}, a={self.a}, b={self.b})")
+        return f"Ellipse(center={self.center}, a={self.a}, b={self.b})"
 
+    def get_vertices(self, steps: int = 72) -> list:
+        """Approximate the ellipse as *steps* points (closed)."""
+        pts = []
+        for i in range(steps + 1):
+            angle = 2 * pi * i / steps
+            pts.append((self.center.x + self.a * cos(angle),
+                        self.center.y + self.b * sin(angle)))
+        return pts
+
+    # ── math ──
     def area(self) -> float:
-        """Returns the ellipse's area."""
         return pi * self.a * self.b
 
     def approx_perimeter(self) -> float:
-        """
-        Returns an approximation of the ellipse's perimeter
-        using Ramanujan's formula.
-        """
+        """Ramanujan's approximation."""
         h = ((self.a - self.b) ** 2) / ((self.a + self.b) ** 2)
         return pi * (self.a + self.b) * (1 + (3 * h) / (10 + sqrt(4 - 3 * h)))
 
     def contains_point(self, vertex: Vertex) -> bool:
-        """Returns True if *vertex* lies inside (or on) the ellipse."""
         dx = (vertex.x - self.center.x) / self.a
         dy = (vertex.y - self.center.y) / self.b
         return dx * dx + dy * dy <= 1
 
-    def draw(self, pen, steps=72, color="black", fill=False):
-        """
-        Draw the ellipse by approximating it with *steps* line segments.
-        """
-        _check_pen(pen)
-        import math
-        if fill:
-            pen.initFill(color)
-        pen.stopDrawing()
-        start_x = self.center.x + self.a
-        start_y = self.center.y
-        pen.tp(start_x, start_y)
-        pen.startDrawing()
-        for i in range(1, steps + 1):
-            angle = 2 * math.pi * i / steps
-            x = self.center.x + self.a * math.cos(angle)
-            y = self.center.y + self.b * math.sin(angle)
-            pen.tp(x, y)
-        if fill:
-            pen.endFill()
 
-
+# ── RegularPolygon ────────────────────────────────────────────────────────────
 
 class RegularPolygon:
-    """
-    A regular n-sided polygon defined by the number of sides and side length.
-    """
+    """Regular n-sided polygon. Vertices generated around local origin (0, 0).
+    Use Movement to position it in the world."""
 
     def __init__(self, sides: int, side_length: float):
         if sides < 3:
-            raise ValueError("A polygon must have at least 3 sides.")
-        self.sides = sides
+            raise ValueError("A polygon needs at least 3 sides.")
+        self.sides       = sides
         self.side_length = side_length
 
     def __repr__(self):
         return f"RegularPolygon(sides={self.sides}, side_length={self.side_length})"
 
-    def perimeter(self) -> float:
-        """Returns the perimeter."""
-        return self.sides * self.side_length
+    def get_vertices(self) -> list:
+        """Vertices centred on the origin, first point at the top."""
+        r = self.side_length / (2 * sin(pi / self.sides))
+        pts = []
+        for i in range(self.sides):
+            angle = 2 * pi * i / self.sides - pi / 2
+            pts.append((r * cos(angle), r * sin(angle)))
+        return pts
 
+    # ── math ──
+    def perimeter(self) -> float:      return self.sides * self.side_length
+    def interior_angle(self) -> float: return (self.sides - 2) * 180 / self.sides
+    def apothem(self) -> float:        return self.side_length / (2 * tan(pi / self.sides))
     def area(self) -> float:
-        """Returns the area."""
         return (self.sides * self.side_length ** 2) / (4 * tan(pi / self.sides))
 
-    def interior_angle(self) -> float:
-        """Returns one interior angle in degrees."""
-        return (self.sides - 2) * 180 / self.sides
 
-    def apothem(self) -> float:
-        """Returns the apothem (radius of the inscribed circle)."""
-        return self.side_length / (2 * tan(pi / self.sides))
-
-    def circumradius(self) -> float:
-        """Returns the circumradius (radius of the circumscribed circle)."""
-        return self.side_length / (2 * (pi / self.sides) ** 0.5
-                                   * (pi / self.sides) ** 0.5
-                                   * 2 * tan(pi / self.sides) ** 0.5)
-        # simpler formula:
-        # return self.side_length / (2 * sin(pi / self.sides))
-
-    def draw(self, pen):
-        """Draw the regular polygon."""
-        _check_pen(pen)
-        exterior = 360 / self.sides
-        pen.startDrawing()
-        for _ in range(self.sides):
-            pen.move(self.side_length)
-            pen.rotate(exterior)
-
-
-
-
-class Line:
-    """A line segment between two vertices."""
-
-    def __init__(self, start: Vertex, end: Vertex):
-        self.start = start
-        self.end = end
-
-    def __repr__(self):
-        return f"Line({self.start} -> {self.end})"
-
-    def length(self) -> float:
-        """Returns the length of the line segment."""
-        return _side(self.start, self.end)
-
-    def midpoint(self) -> Vertex:
-        """Returns the midpoint as a Vertex."""
-        mx = (self.start.x + self.end.x) / 2
-        my = (self.start.y + self.end.y) / 2
-        return Vertex(mx, my)
-
-    def slope(self) -> float:
-        """
-        Returns the slope of the line.
-        Raises ZeroDivisionError if the line is vertical.
-        """
-        dx = self.end.x - self.start.x
-        if dx == 0:
-            raise ZeroDivisionError("Line is vertical; slope is undefined.")
-        return (self.end.y - self.start.y) / dx
-
-    def draw(self, pen):
-        """Draw the line segment."""
-        _check_pen(pen)
-        pen.stopDrawing()
-        pen.tp(self.start.x, self.start.y)
-        pen.startDrawing()
-        pen.tp(self.end.x, self.end.y)
-
-
-
+# ── Polygon ───────────────────────────────────────────────────────────────────
 
 class Polygon:
-    """
-    A polygon defined by an arbitrary list of vertices.
-    Use Triangle, Square, or RegularPolygon for common shapes.
-    """
+    """Arbitrary polygon from a list of Vertex objects."""
 
     def __init__(self, vertices: list):
         if len(vertices) < 3:
@@ -466,30 +386,18 @@ class Polygon:
     def __repr__(self):
         return f"Polygon({self.vertices})"
 
+    def get_vertices(self) -> list:
+        return [(v.x, v.y) for v in self.vertices]
+
+    # ── math ──
     def perimeter(self) -> float:
-        """Returns the perimeter."""
-        total = 0.0
         n = len(self.vertices)
-        for i in range(n):
-            total += _side(self.vertices[i], self.vertices[(i + 1) % n])
-        return total
+        return sum(_side(self.vertices[i], self.vertices[(i+1) % n])
+                   for i in range(n))
 
     def area(self) -> float:
-        """Returns the area using the Shoelace formula."""
-        n = len(self.vertices)
-        total = 0.0
-        for i in range(n):
-            j = (i + 1) % n
-            total += self.vertices[i].x * self.vertices[j].y
-            total -= self.vertices[j].x * self.vertices[i].y
+        verts = self.vertices
+        n = len(verts)
+        total = sum(verts[i].x * verts[(i+1)%n].y -
+                    verts[(i+1)%n].x * verts[i].y for i in range(n))
         return abs(total) / 2
-
-    def draw(self, pen):
-        """Draw the polygon."""
-        _check_pen(pen)
-        pen.stopDrawing()
-        pen.tp(self.vertices[0].x, self.vertices[0].y)
-        pen.startDrawing()
-        for v in self.vertices[1:]:
-            pen.tp(v.x, v.y)
-        pen.tp(self.vertices[0].x, self.vertices[0].y)
