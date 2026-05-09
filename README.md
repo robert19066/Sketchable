@@ -2,6 +2,8 @@
 _note: yes, I know my previous projects were vibe-coded, I am dissapointed of myself. BUTTTT I've decided to re-awaken my developer
 powers and made this library. Yes. I build it. I didn't use AI at **all**_
 
+Releases prior to 1.2 are lost, as the repository was accidentaly removed, but since I still have it localy, I restored it.
+
 Pydraw is an addition to the python's turtle library, adding shapes, polygons, and more.
 
 # Instalation:
