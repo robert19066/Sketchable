@@ -7,5 +7,5 @@ from .shapes import (
     Line,
     Ellipse,
     Square,
-    Moveable
 )
+from .motion import Motion

@@ -3,18 +3,43 @@
 licenced under the GNU Affero General Public License v3.0 (AGPL3)
 This file is used for the PyPen.
 
-This code was written mostly by me, yet I used AI to add math to Triangle, Square and VertexSquare. Also I used it for function descriptions. Rest of the logic was made by me.
-Yes, it defies the "no ai" rule, BUT i didn't vibe code, i just used it to tidy up my code, and eliminate inconsistencies across all shapes. 
+This code was written by me.(100%)
 
-Yes but you mind ask, "BUT YOU DON'T KNOW GEOMETRY?!". dumbasses i am 6th grade HOW THE FUQ I AM SUPPOSED TO KNOW SHOELACE FORMULA?!
-or the other complicated shi.
-So please, no hate. Trying to quit vibe coding.
-
-Changelog - V1.2:
-- Support for movement and unified draw()
+Changelog(only changes if the file was changed :) )  - V1.3:
+- more functions
 """
 
+from time import sleep
 import turtle
+
+from enum import Enum
+
+class Speed(Enum):
+    """
+    Speed|Turtle equivalent
+    SLUGGISH:1
+    SLOWER:2
+    QUITE_SLOW:3
+    SLOW:4
+    MEDIUM:5
+    QUITE_FAST:6
+    FASTER:7
+    VERRY_FAST:8
+    SUPER_FAST:9
+    ALMOST_INSTANT:10
+    INSTANT:0
+    """
+    SLUGGISH = 1
+    SLOWER = 2
+    QUITE_SLOW = 3
+    SLOW = 4
+    MEDIUM = 5
+    QUITE_FAST = 6
+    FASTER = 7
+    VERY_FAST = 8
+    SUPER_FAST = 9
+    ALMOST_INSTANT = 10
+    INSTANT = 0
 
 
 class PyPen:
@@ -23,15 +48,47 @@ class PyPen:
         self.screen.title(title)
         self._turtle = turtle.Turtle()
 
-    def initialise(self, color: str, size: int, speed: int):
-        self.screen.tracer(0)  # <- add this
+    def initialise(self, PenColor: str, size: int, speed: str, BackgroundColor: Speed):
+        """
+        INITIALISES AN PYPEN!
+        Arguments:
+        - PenColor - pen color
+        - Size - pen size
+        - Speed - Pen speed("sluggish", "slower", "quite slow", "slow", "medium", "quite fast", "faster", "verry fast", "really fast", "super fast", "almost instant", "instant")
+        - BackgroundColor - the color of the ground.
+        """
+        self.screen.tracer(0)  # <- for smooth movement =)
         self._turtle.hideturtle()
         self._turtle.pendown()
-        self._turtle.color(color)
+        self._turtle.screen.bgcolor(BackgroundColor)
+        self._turtle.color(PenColor)
         self._turtle.pensize(size)
-        self._turtle.speed(speed)
+        if (speed == Speed.SLUGGISH):
+            self._turtle.speed(1)
+        elif (speed == Speed.SLOWER):
+            self._turtle.speed(2)
+        elif (speed == Speed.QUITE_FAST):
+            self._turtle.speed(3)
+        elif (speed == Speed.SLOW):
+            self._turtle.speed(4)
+        elif (speed == Speed.MEDIUM):
+            self._turtle.speed(5)
+        elif (speed == Speed.QUITE_FAST):
+            self._turtle.speed(6)
+        elif (speed == Speed.FASTER):
+            self._turtle.speed(7)
+        elif (speed == Speed.VERY_FAST):
+            self._turtle.speed(8)
+        elif (speed == Speed.SUPER_FAST):
+            self._turtle.speed(9)
+        elif (speed == Speed.ALMOST_INSTANT):
+            self._turtle.speed(10)
+        elif (speed == Speed.INSTANT):
+            self._turtle.speed(0)
 
     def clear(self):
+        """
+        """
         self._turtle.clear()
 
     def stopDrawing(self):

@@ -10,8 +10,13 @@ Yes but you mind ask, "BUT YOU DON'T KNOW GEOMETRY?!". dumbasses i am 6th grade 
 or the other complicated shi.
 So please, no hate. Trying to quit vibe coding.
 
-Changelog - V1.2:
-- Support for movement and unified draw()
+Changelog - V1.3:
+- Made Moveble an helper class for motion.py's Motion class(more intuitive.)
+
+Changelog - V1.3 (crittical bugfix):
+- All _Moveable subclasses now call super().__init__() so _pos, _angle, _scale
+  are always initialised. Previously only Square did this, so move_by/rotate_to
+  etc. would crash on Triangle, Line, VertexSquare, RegularPolygon and Polygon.
 """
 
 from math import pi, sqrt, tan, cos, sin, radians
@@ -26,12 +31,9 @@ def _side(a, b) -> float:
 
 # ── Moveable ──────────────────────────────────────────────────────────────────
 
-class Moveable:
+class _Moveable:
     """
-    Base class for all shapes.
-    Provides position, rotation, and scale — applied as Scale → Rotate → Translate.
-    All methods return self so they can be chained:
-        Square(60).move_to(100, 100).rotate_by(45).set_scale(2)
+    Helper class for the new Motion class.
     """
 
     def __init__(self):
@@ -40,36 +42,36 @@ class Moveable:
         self._scale = 1.0
 
     # ── position ──
-    def move_to(self, x: float, y: float) -> "Moveable":
+    def move_to(self, x: float, y: float) -> "_Moveable":
         """Set world position to absolute (x, y)."""
         self._pos = (float(x), float(y))
         return self
 
-    def move_by(self, dx: float, dy: float) -> "Moveable":
+    def move_by(self, dx: float, dy: float) -> "_Moveable":
         """Shift current position by (dx, dy)."""
         self._pos = (self._pos[0] + dx, self._pos[1] + dy)
         return self
 
     # ── rotation ──
-    def rotate_to(self, angle: float) -> "Moveable":
+    def rotate_to(self, angle: float) -> "_Moveable":
         """Set rotation to an absolute angle in degrees (CCW)."""
         self._angle = angle % 360
         return self
 
-    def rotate_by(self, delta: float) -> "Moveable":
+    def rotate_by(self, delta: float) -> "_Moveable":
         """Add delta degrees (CCW) to current rotation."""
         self._angle = (self._angle + delta) % 360
         return self
 
     # ── scale ──
-    def set_scale(self, factor: float) -> "Moveable":
+    def set_scale(self, factor: float) -> "_Moveable":
         """Set uniform scale (1.0 = original size)."""
         if factor <= 0:
             raise ValueError("Scale must be positive.")
         self._scale = factor
         return self
 
-    def scale_by(self, factor: float) -> "Moveable":
+    def scale_by(self, factor: float) -> "_Moveable":
         """Multiply current scale by factor."""
         if factor <= 0:
             raise ValueError("Scale must be positive.")
@@ -77,7 +79,7 @@ class Moveable:
         return self
 
     # ── reset ──
-    def reset_transform(self) -> "Moveable":
+    def reset_transform(self) -> "_Moveable":
         """Reset position, rotation, and scale to defaults."""
         self._pos   = (0.0, 0.0)
         self._angle = 0.0
@@ -112,8 +114,9 @@ class Moveable:
 
 # ── Vertex ────────────────────────────────────────────────────────────────────
 
-class Vertex(Moveable):
+class Vertex(_Moveable):
     def __init__(self, x: float, y: float):
+        super().__init__()          # ← bugfix: was missing
         self.x = x
         self.y = y
 
@@ -129,10 +132,11 @@ class Vertex(Moveable):
 
 # ── Line ──────────────────────────────────────────────────────────────────────
 
-class Line(Moveable):
+class Line(_Moveable):
     """A line segment between two vertices."""
 
     def __init__(self, start: Vertex, end: Vertex):
+        super().__init__()          # ← bugfix: was missing
         self.start = start
         self.end   = end
 
@@ -201,8 +205,9 @@ class Circle:
 
 # ── Triangle ──────────────────────────────────────────────────────────────────
 
-class Triangle:
+class Triangle(_Moveable):
     def __init__(self, v1: Vertex, v2: Vertex, v3: Vertex):
+        super().__init__()          # ← bugfix: was missing
         self.v1 = v1
         self.v2 = v2
         self.v3 = v3
@@ -247,12 +252,12 @@ class Triangle:
 
 # ── Square ────────────────────────────────────────────────────────────────────
 
-class Square(Moveable):
+class Square(_Moveable):
     """Axis-aligned square. Vertices are generated from the local origin (0, 0).
     Use Movement to position it in the world."""
 
     def __init__(self, side):
-        super().__init__()   # <- THIS is required
+        super().__init__()
         self.side = side
 
     def __repr__(self):
@@ -270,10 +275,11 @@ class Square(Moveable):
 
 # ── VertexSquare ──────────────────────────────────────────────────────────────
 
-class VertexSquare(Moveable):
+class VertexSquare(_Moveable):
     """Quadrilateral defined by 4 explicit vertices (supports rotation/skew)."""
 
     def __init__(self, v1: Vertex, v2: Vertex, v3: Vertex, v4: Vertex):
+        super().__init__()          # ← bugfix: was missing
         self.v1 = v1
         self.v2 = v2
         self.v3 = v3
@@ -343,11 +349,12 @@ class Ellipse:
 
 # ── RegularPolygon ────────────────────────────────────────────────────────────
 
-class RegularPolygon:
+class RegularPolygon(_Moveable):
     """Regular n-sided polygon. Vertices generated around local origin (0, 0).
     Use Movement to position it in the world."""
 
     def __init__(self, sides: int, side_length: float):
+        super().__init__()          # ← bugfix: was missing
         if sides < 3:
             raise ValueError("A polygon needs at least 3 sides.")
         self.sides       = sides
@@ -375,10 +382,11 @@ class RegularPolygon:
 
 # ── Polygon ───────────────────────────────────────────────────────────────────
 
-class Polygon:
+class Polygon(_Moveable):
     """Arbitrary polygon from a list of Vertex objects."""
 
     def __init__(self, vertices: list):
+        super().__init__()          # ← bugfix: was missing
         if len(vertices) < 3:
             raise ValueError("A polygon needs at least 3 vertices.")
         self.vertices = vertices

@@ -22,9 +22,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="core\shapes.py" />
-    <Compile Include="core\pypen.py" />
-    <Compile Include="core\__init__.py" />
+    <Compile Include="pydraw\motion.py" />
+    <Compile Include="pydraw\shapes.py" />
+    <Compile Include="pydraw\pypen.py" />
+    <Compile Include="pydraw\__init__.py" />
     <Compile Include="test.py" />
   </ItemGroup>
   <ItemGroup>
@@ -32,7 +33,7 @@
     <Content Include="setup.cfg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="core\" />
+    <Folder Include="pydraw\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
