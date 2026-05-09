@@ -21,32 +21,32 @@ The instantiation of geometric primitives within the PyDraw environment requires
 from shapes import Vertex, Line, Circle, Triangle, Square, VertexSquare, Ellipse, RegularPolygon, Polygon
 
 \# 1\. Vertex (A fundamental coordinate point within the 2D manifold)  
-v1 \= Vertex(0, 0\)  
-v2 \= Vertex(100, 100\)
+`v1 = Vertex(0, 0\)  `
+`v2 = Vertex(100, 100\)`
 
 \# 2\. Line (A linear segment established between two vertices)  
-entity\_line \= Line(start=v1, end=v2)
+`entity\_line = Line(start=v1, end=v2)`
 
 \# 3\. Circle (Defined by a central vertex and a scalar radius)  
-entity\_circle \= Circle(center=v1, radius=45.5)
+`entity\_circle = Circle(center=v1, radius=45.5)`
 
 \# 4\. Triangle (A three-sided polygon defined by three vertices)  
-entity\_triangle \= Triangle(v1, v2, Vertex(-50, 50))
+`triangle = Triangle(v1, v2, Vertex(-50, 50))`
 
 \# 5\. Square (A regular quadrilateral instantiated at the origin)  
-entity\_square \= Square(side=60).move\_to(10, 10\)
+`square = Square(side=60).move_to(10, 10)`
 
 \# 6\. VertexSquare (A quadrilateral defined by four distinct vertices)  
-entity\_v\_square \= VertexSquare(v1, v2, Vertex(50, \-50), Vertex(-50, 50))
+`square = VertexSquare(v1, v2, Vertex(50, -50), Vertex(-50, 50))`
 
 \# 7\. Ellipse (Defined by a center and two semi-axes, 'a' and 'b')  
-entity\_ellipse \= Ellipse(center=v1, a=80, b=40)
+`ellipse = Ellipse(center=v1, a=80, b=40)`
 
 \# 8\. Regular Polygons (Equilateral and equiangular n-gons)  
-hexagon \= RegularPolygon(sides=6, side\_length=30)
+`hexagon = RegularPolygon(sides=6, side_length=30)`
 
 \# 9\. Custom Polygon (An arbitrary n-gon defined by an ordered list of vertices)  
-custom\_poly \= Polygon(\[Vertex(0,0), Vertex(50, 20), Vertex(30, 80)\])
+`custom_poly = Polygon([Vertex(0,0), Vertex(50, 20), Vertex(30, 80)])`
 
 ## **III. Kinematic and Motion Subsystems**
 
@@ -74,8 +74,8 @@ hex\_shape.move\_to(0, 0\)
 
 \# Construction of the kinematic wrapper  
 \# Friction is defined as a scalar multiplier where 1.0 represents an absence of kinetic energy loss.  
-physics\_body \= Motion(  
-    shape=hex\_shape,   
+physics_body = Motion(  
+    shape=hex_shape,   
     pen=engine,   
     vx=8.5,   
     vy=6.0,   
@@ -83,16 +83,13 @@ physics\_body \= Motion(
 )
 
 \# Application of constant acceleration (e.g., simulated gravitational forces)  
-physics\_body.accelerate(ax=0, ay=-0.5)
+physics_body.accelerate(ax=0, ay=-0.5)
 
 \# Primary simulation loop  
 while True:  
     engine.clear()                                  
-    engine.draw(hex\_shape, color="cyan")            
-      
-    \# Execution of the kinematic update  
-    \# This encompasses translation, boundary verification, and frame rate synchronization.  
-    physics\_body.update(dt=0.016, bounce=True)    
+    engine.draw(hex_shape, color="cyan")            
+
 
 ## **IV. Comprehensive Demonstration: PyMaze**
 
