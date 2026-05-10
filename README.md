@@ -93,7 +93,7 @@ while True:
 
 ## **IV. Comprehensive Demonstration: PyMaze**
 
-A full realization of the engine's capabilities is documented in the test.py module. The "PyMaze" application demonstrates the integration of user-input handling, grid-based collision logic, and real-time head-up display (HUD) rendering.
+A full realization of the engine's capabilities is documented in the test.py module. The "PyMaze" application demonstrates the integration of user-input handling, grid-based collision logic, and real-time head-up display (HUD) rendering. The showcase uses turtle and PyDraw
 
 ## **V. Scholarly Attributions and Development Context**
 
