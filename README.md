@@ -29,7 +29,7 @@ or in more simpler terms - if you fork/use it in an separate repo, give credit. 
 
 # III - How2Use:
 
-## 1. Shapes and their initialisations(one with ※ can be moved):
+## 1. Shapes and their initialisations(one with ※ can be used with the Motion class):
 - ※`Vertex`: `vertex = Vertex(x: float, y: float)`
 - `Circle`: `circle = Circle(center: Vertex, radius: float)`
 - ※`Triangle`: `triangle = Triangle(v1: Vertex, v2: Vertex, v3: Vertex)`
