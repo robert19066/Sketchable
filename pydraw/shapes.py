@@ -310,12 +310,13 @@ class VertexSquare(_Moveable):
 
 # ── Ellipse ───────────────────────────────────────────────────────────────────
 
-class Ellipse:
+class Ellipse():
     """Ellipse defined by center Vertex, semi-axis a (horizontal), b (vertical)."""
 
     def __init__(self, center: Vertex, a: float, b: float):
         if not isinstance(center, Vertex):
             raise TypeError("center must be a Vertex.")
+        super().__init__()
         self.center = center
         self.a = a
         self.b = b

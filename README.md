@@ -1,102 +1,160 @@
-<p align="center"> <a href="https://postimg.cc/Pp2zGxwG"> <img src="https://i.postimg.cc/wMdWmRxB/caspdlowekk.png" alt="image" /> </a> </p>
+<p align="center"> <a href="https://postimg.cc/Pvk711WP"> <img src="https://i.postimg.cc/pr8R5CxV/Chat-GPT-Image-May-11-2026-02-50-51-PM-removebg-preview.png" alt="no more image *sob*" /> </a> </p>
 
 
-<h1 align="center">Documentation for the PyDraw 2D Graphical Engine</h1>
-The PyDraw system constitutes a high-level abstraction layer and computational framework developed upon the Python turtle module. This software architecture facilitates the execution of two-dimensional graphical rendering, kinematic simulations, and geometric analysis by mitigating the complexities associated with low-level buffer management and coordinate system synchronization.
+<h1 align="center">Documentation for the PyDraw Graphical Library(PGL)</h1>
 
-The software is distributed under the terms of the GNU Affero General Public License version 3.0 (AGPL3).
+> [!NOTE]
+> PyDraw is leaving W.I.P(Pre-Release) soon!
+> I think I'll get it ready for mass-use when ill squash all bugs.
+> Official release will happen on version 2.0 or 1.5.
+> Ill announce the final Pre-Release soon.
+> Also since there are so many projects named PyDraw, submit your idea for a new name: https://forms.gle/8p6pJ7tybQe94ENC8
 
-## **I. Technical Capabilities**
+> [!NOTE]
+> The Licence has been changed from AGPL to MIT.
 
-* **Execution Environment:** The framework transforms the native procedural drawing interface into a persistent execution state suitable for iterative simulation loops. The "PyMaze" implementation serves as a primary demonstration of grid-based pathfinding and real-time state updates.  
-* **Geometric Primitives:** The system provides an extensive library of geometric entities, each possessing internal methods for the calculation of surface area, perimeter, and topological verification.  
-* **Coordinate Transformations:** All entities inherit from a foundational transformation class, enabling precise translation, rotation, and scaling within a Cartesian coordinate system.  
-* **Kinematic Modeling:** The motion subsystem integrates velocity vectors, gravitational acceleration, and frictional coefficients. Automated boundary detection ensures the containment of entities within the defined viewport through the application of reflective collision logic.  
-* **Rendering Pipeline:** The PyPen component provides a unified interface for the rasterization of all supported geometric structures via a centralized rendering method.
+The software is distributed under the terms of the MIT License.
+or in more simpler terms - if you fork/use it in an separate repo, give credit. easy.
 
-## **II. Specification of Geometric Entities**
+# I - Capabilities and installation:
+- **Primitives(basic shapes):** Squares, Circles, Triangles, and more, with their geometrical operations(area, perrimeter, etc)
+- **Custom shapes(via Vertex):** Since PyDraw is based on the Vertex(basic x and y coodronates), you can make Polygons(with an unlimited nr of Vertexes), or an VertexSquare(an square made of vertexes)
+- **Motion, basic physics and collisions:** The Vertex also helps with collisions, making every shape you do colide(of course, only moveable ones). You just define a shape, then you can move/rotate it or resize it!
+- **Fast updates:** i am updating this library quite often! Especially bugfixes, my ahh can't make some nice code. Bugfixes will be part of most updates, so you can enjoy the smoothest, most stable experience! also we have issues so you can report bugs/suggestions there. 
+- **monke hear monke do:** i listen to feedback and i implement your ideas(but please don't make them too wacky)
 
-The instantiation of geometric primitives within the PyDraw environment requires adherence to the following structural definitions. Every entity inherits transformation capabilities from the \_Moveable superclass.
+## II - Installation
+1. Via `.url`: Open the latest release, run the .url file and run the command from the site.
+2. Via `pip`: run `pip install pydraw-turtle`, and `pip install --upgrade pydraw-turtle` for updating.
 
-from shapes import Vertex, Line, Circle, Triangle, Square, VertexSquare, Ellipse, RegularPolygon, Polygon
+# III - How2Use:
 
-\# 1\. Vertex (A fundamental coordinate point within the 2D manifold)  
-`v1 = Vertex(0, 0\)  `
-`v2 = Vertex(100, 100\)`
+## 1. Shapes and their initialisations(one with ※ can be moved):
+- ※`Vertex`: `vertex = Vertex(x: float, y: float)`
+- `Circle`: `circle = Circle(center: Vertex, radius: float)`
+- ※`Triangle`: `triangle = Triangle(v1: Vertex, v2: Vertex, v3: Vertex)`
+- ※`Square`: `square = Square(side: int)`
+- ※`VertexSquare`: `vsquare = VertexSquare(v1: Vertex, v2: Vertex, v3: Vertex, v4: Vertex)`
+- `Elipse`: `elipse = Elipse(center: Vertex, a: float, b: float)`
+- ※`RegularPolygon(n-sided shape`: `rpoly = RegularPolygon(sides: int, side_lenght: float)`
+- ※`Polygon:` `poly = Polygon(vertecies: list)` (make a list full of vertecies)
 
-\# 2\. Line (A linear segment established between two vertices)  
-`entity\_line = Line(start=v1, end=v2)`
+## 2. Functions:
+(all shapes exept vertex have get_vertices())
+- #### Vertex: `getvX()`; `getvY()`
+- #### Line: `lenght()`; `midpoint()`, `slope()`
+- #### Circle: `getX()`; `getY()`; `getRadius()`; `area()`; `circ()`; `diam()`; `contains_point()`
+- #### Triangle: `side_lenghts()`; `perimeter()`; `area()`; `is_equilateral()`; `is_isosceles()`; `is_right()`
+- #### Square: `area()`; `perimeter()`; `diagonal()`
+- #### VertexSquare: `area()`; `perimeter()`
+- #### Ellipse: `area()`; `approx_perimeter()`; `contains_point()`
+- #### RegularPolygon: `perimeter()`; `interior_angle()`; `apothem()`; `area()`
+- #### Polygon: `area()`
 
-\# 3\. Circle (Defined by a central vertex and a scalar radius)  
-`entity\_circle = Circle(center=v1, radius=45.5)`
+## 3. Importing:
+You can import all the things PyDraw has by writing `from pydraw import *` (not avabile for versions prior to 1.3.2)
+If your version is 1.3.1, then write `from pydraw import <what component you would want>`
+And if your version is prior to 1.3.1, write `from core import <what component you would want to import>`
 
-\# 4\. Triangle (A three-sided polygon defined by three vertices)  
-`triangle = Triangle(v1, v2, Vertex(-50, 50))`
+## 4. Movement:
+- For 1.3.1 and above: Use the Motion class, with the functions `move_to()`; `move_by()`; `set_velocity()`; `accelerate()`; `stop()`; `check_edge_collision()`; `is_on_screen()`; `update()`.
+Example code:
+```python
+from pydraw import *
 
-\# 5\. Square (A regular quadrilateral instantiated at the origin)  
-`square = Square(side=60).move_to(10, 10)`
+pen = PyPen("square chaos")
+pen.initialise("white", 2, Speed.INSTANT, "black")
 
-\# 6\. VertexSquare (A quadrilateral defined by four distinct vertices)  
-`square = VertexSquare(v1, v2, Vertex(50, -50), Vertex(-50, 50))`
+# ── squares ─────────────────────────────
 
-\# 7\. Ellipse (Defined by a center and two semi-axes, 'a' and 'b')  
-`ellipse = Ellipse(center=v1, a=80, b=40)`
+s1 = Square(50)
+s1.move_to(-100, -50)
 
-\# 8\. Regular Polygons (Equilateral and equiangular n-gons)  
-`hexagon = RegularPolygon(sides=6, side_length=30)`
+s2 = Square(40)
+s2.move_to(80, 60)
 
-\# 9\. Custom Polygon (An arbitrary n-gon defined by an ordered list of vertices)  
-`custom_poly = Polygon([Vertex(0,0), Vertex(50, 20), Vertex(30, 80)])`
+s3 = Square(70)
+s3.move_to(0, 0)
 
-## **III. Kinematic and Motion Subsystems**
+# ── motion ──────────────────────────────
 
-The Motion class provides a wrapper for the integration of physical properties into geometric entities. This class manages the transition from static rendering to dynamic simulation by overseeing velocity components and environmental constraints.
+m1 = Motion(s1, pen, vx=3, vy=2)
+m2 = Motion(s2, pen, vx=-2, vy=3.5)
+m3 = Motion(s3, pen, vx=1.5, vy=-2.5)
 
-### **Implementation Protocol:**
+# ── loop ────────────────────────────────
 
-1. **Entity Selection:** A geometric entity must be initialized.  
-2. **Kinematic Wrapping:** A Motion instance is constructed, incorporating the target entity, the rendering interface, initial velocity components (vx, vy), and the coefficient of friction.  
-3. **State Iteration:** The update() method must be executed within the primary simulation loop.
+while True:
+    pen.clear()
 
-### **Kinematic Simulation Example:**
+    pen.draw(s1, color="white", fill=True)
+    pen.draw(s2, color="red", fill=True)
+    pen.draw(s3, color="blue", fill=True)
 
-from pypen import PyPen, Speed  
-from shapes import RegularPolygon  
-from motion import Motion
+    m1.update()
+    m2.update()
+    m3.update()
 
-\# Initialization of the rendering interface  
-engine \= PyPen("Kinematic Simulation Environment")  
-engine.initialise(PenColor="cyan", size=3, speed=Speed.INSTANT, BackgroundColor="black")
+    # bounce logic
+    if not m1.is_on_screen():
+        m1.vx *= -1
+        m1.vy *= -1
 
-\# Instantiation of a regular hexagon  
-hex\_shape \= RegularPolygon(sides=6, side\_length=40)  
-hex\_shape.move\_to(0, 0\)
+    if not m2.is_on_screen():
+        m2.vx *= -1
+        m2.vy *= -1
 
-\# Construction of the kinematic wrapper  
-\# Friction is defined as a scalar multiplier where 1.0 represents an absence of kinetic energy loss.  
-physics_body = Motion(  
-    shape=hex_shape,   
-    pen=engine,   
-    vx=8.5,   
-    vy=6.0,   
-    friction=1.0   
-)
+    if not m3.is_on_screen():
+        m3.vx *= -1
+        m3.vy *= -1
+```
+- For version 1.2.0 use the `Moveable` class, that has the same movement commands as `Motion`, but whiout the collision stuff,
+and of course, whiout updating(you need to do it manually via pen.clear() ).
+Example code:
+```python
+import os
+import sys
+from core import PyPen, Square, Triangle, Vertex, Moveable
+from turtle import *
+import time
 
-\# Application of constant acceleration (e.g., simulated gravitational forces)  
-physics_body.accelerate(ax=0, ay=-0.5)
+pen = PyPen("dvd!")
 
-\# Primary simulation loop  
-while True:  
-    engine.clear()                                  
-    engine.draw(hex_shape, color="cyan")            
+pen.initialise("black", 1, 1)
 
+cube = Square(60).move_to(100, 100)
 
-## **IV. Comprehensive Demonstration: PyMaze**
+dx, dy = 3, 2  # velocity (speed in x and y)
 
-A full realization of the engine's capabilities is documented in the test.py module. The "PyMaze" application demonstrates the integration of user-input handling, grid-based collision logic, and real-time head-up display (HUD) rendering. The showcase uses turtle and PyDraw
+while True:
+    pen.clear()
 
-## **V. Scholarly Attributions and Development Context**
+    # move cube
+    cube.move_by(dx, dy)
 
-The PyDraw framework was conceptualized and implemented to resolve the lack of standardized geometric abstraction in contemporary educational graphics libraries. It is noteworthy that the project was initiated and brought to fruition by an individual at the secondary education level.
+    x, y = cube.position
+    size = cube.side
 
-While certain algorithmic complexities, such as the Shoelace formula for area calculation, were refined through the utilization of computational linguistics tools, the overarching software architecture, kinematic logic, and design patterns are the result of original scholarly inquiry.
+    # screen bounds (you may tweak these depending on your window)
+    left, right = -395, 395
+    bottom, top = -330, 330
+
+    # bounce logic
+    if x < left or x + size > right:
+        dx *= -1
+
+    if y < bottom or y + size > top:
+        dy *= -1
+
+    pen.draw(cube, color="purple", fill=True)
+
+    pen.screen.update()
+    time.sleep(0.01)
+```
+
+# III - Contribuiting and reporting bugs:
+You can tell me what issues PyDraw has(because i don't test it too often), by going into the issues section of GitHub.
+Also, you can suggest me some new ideas there too. Forking is allowed, and you can fork freely, and even merge with the main repo.
+But if you make your own fork, be sure to give credit.
+
+Made with 💔- ugh i mean 💖 and not 🤖 by Brickboss <3

@@ -9,8 +9,8 @@ Changelog - V1.3:
 - Added update() as the one-call animation tick (move → collide → refresh → sleep).
 """
 
-from pypen import PyPen
-from shapes import _Moveable
+from .ppn import PyPen
+from .shapes import _Moveable
 import time
 
 

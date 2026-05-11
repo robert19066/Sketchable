@@ -24,7 +24,7 @@
   <ItemGroup>
     <Compile Include="pydraw\motion.py" />
     <Compile Include="pydraw\shapes.py" />
-    <Compile Include="pydraw\pypen.py" />
+    <Compile Include="pydraw\ppn.py" />
     <Compile Include="pydraw\__init__.py" />
     <Compile Include="test.py" />
   </ItemGroup>

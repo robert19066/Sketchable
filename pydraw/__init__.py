@@ -1,4 +1,4 @@
-from .pypen import PyPen
+from .ppn import PyPen, Speed
 from .shapes import (
     Circle,
     Triangle,
@@ -6,6 +6,8 @@ from .shapes import (
     VertexSquare,
     Line,
     Ellipse,
-    Square,
+    Square
 )
 from .motion import Motion
+
+__all__ = ["PyPen", "Circle", "Vertex", "VertexSquare", "Line", "Ellipse", "Square", "Speed", "Motion"]
