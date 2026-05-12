@@ -13,6 +13,12 @@
 > [!NOTE]
 > The Licence has been changed from AGPL to MIT.
 
+> [!TIP]
+> this is my first project after stopping vibe-coding. it does have bugs, and for some features i indeed used AI to help me implement them.
+> This also means there are some bugs, and if you see one:
+> #### **WRITE AN ISSUE**.
+> i _beg_ you. 
+
 The software is distributed under the terms of the MIT License.
 or in more simpler terms - if you fork/use it in an separate repo, give credit. easy.
 
