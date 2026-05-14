@@ -1,4 +1,6 @@
 from .ppn import PyPen, Speed
+from .sound import Speakers
+from .keyboardio import Keyboard
 from .shapes import (
     Circle,
     Triangle,
@@ -10,4 +12,4 @@ from .shapes import (
 )
 from .motion import Motion
 
-__all__ = ["PyPen", "Circle", "Vertex", "VertexSquare", "Line", "Ellipse", "Square", "Speed", "Motion"]
+__all__ = ["PyPen", "Circle", "Vertex", "VertexSquare", "Line", "Ellipse", "Square", "Speed", "Motion", "Speakers", "Keyboard", "Triangle"]
