@@ -1,31 +1,31 @@
-<p align="center"> <a href="https://postimg.cc/Pvk711WP"> <img src="https://i.postimg.cc/pr8R5CxV/Chat-GPT-Image-May-11-2026-02-50-51-PM-removebg-preview.png" alt="no more image *sob*" /> </a> </p>
+<p align="center"> <a href="https://postimg.cc/Pvk711WP"> <img src="https://i.postimg.cc/SNysfd00/9e5d0f42-f7f4-4ff1-acb8-3b96980b8d1c-removalai-preview.png" alt="no more image *sob*" /> </a> </p>
 
 
-<h1 align="center">Documentation for the PyDraw Graphical Library(PGL)</h1>
+<h1 align="center">Documentation for the PyDraw Game Engine(PGE)</h1>
+
+![license](https://img.shields.io/badge/license-MIT-green?style=flat)
+![Get It On](https://img.shields.io/badge/Get%20It%20On-PyPi-informational?style=flat&logo=pypi)
+![Made with](https://img.shields.io/badge/Made%20with-Python-informational?style=flat&logo=python)
+![Status](https://img.shields.io/badge/Status-Maintained-important?style=flat)
+![Difficulty](https://img.shields.io/badge/Difficulty-Low-success?style=flat)
+![Type](https://img.shields.io/badge/Type-Game%20Engine%2FLibrary-informational?style=flat)
+![Made with](https://img.shields.io/badge/Made%20with-Love-red?style=flat&logo=heart)
+
+
 
 > [!NOTE]
-> PyDraw is leaving W.I.P(Pre-Release) soon!
-> I think I'll get it ready for mass-use when ill squash all bugs.
-> Official release will happen on version 2.0 or 1.5.
-> Ill announce the final Pre-Release soon.
+> PyDraw is now an GAME ENGINE!
+> Also it's leaving W.I.P(Pre-Release) in version 1.6, so expect a lot of new features and optimizations, and of course, a more stable experience!
 > Also since there are so many projects named PyDraw, submit your idea for a new name: https://forms.gle/8p6pJ7tybQe94ENC8
 
-> [!NOTE]
-> The Licence has been changed from AGPL to MIT.
 
-> [!TIP]
-> this is my first project after stopping vibe-coding. it does have bugs, and for some features i indeed used AI to help me implement them.
-> This also means there are some bugs, and if you see one:
-> #### **WRITE AN ISSUE**.
-> i _beg_ you. 
-
-The software is distributed under the terms of the MIT License.
-or in more simpler terms - if you fork/use it in an separate repo, give credit. easy.
 
 # I - Capabilities and installation:
 - **Primitives(basic shapes):** Squares, Circles, Triangles, and more, with their geometrical operations(area, perrimeter, etc)
 - **Custom shapes(via Vertex):** Since PyDraw is based on the Vertex(basic x and y coodronates), you can make Polygons(with an unlimited nr of Vertexes), or an VertexSquare(an square made of vertexes)
 - **Motion, basic physics and collisions:** The Vertex also helps with collisions, making every shape you do colide(of course, only moveable ones). You just define a shape, then you can move/rotate it or resize it!
+- **Keyboard Input:** The library supports listening for keyboard input, allowing you to create interactive applications.
+- **Sound:** The library also has a sound module that can play WAV files natively, and can decode and play other formats with FFmpeg installed.
 - **Fast updates:** i am updating this library quite often! Especially bugfixes, my ahh can't make some nice code. Bugfixes will be part of most updates, so you can enjoy the smoothest, most stable experience! also we have issues so you can report bugs/suggestions there. 
 - **monke hear monke do:** i listen to feedback and i implement your ideas(but please don't make them too wacky)
 
@@ -49,11 +49,11 @@ or in more simpler terms - if you fork/use it in an separate repo, give credit. 
 (all shapes exept vertex have get_vertices())
 - #### Vertex: `getvX()`; `getvY()`
 - #### Line: `lenght()`; `midpoint()`, `slope()`
-- #### Circle: `getX()`; `getY()`; `getRadius()`; `area()`; `circ()`; `diam()`; `contains_point()`
+- #### Circle: `getX()`; `getY()`; `getRadius()`; `area()`; `circ()`; `diam()`; `contains_point(v1: Vertex)`
 - #### Triangle: `side_lenghts()`; `perimeter()`; `area()`; `is_equilateral()`; `is_isosceles()`; `is_right()`
 - #### Square: `area()`; `perimeter()`; `diagonal()`
 - #### VertexSquare: `area()`; `perimeter()`
-- #### Ellipse: `area()`; `approx_perimeter()`; `contains_point()`
+- #### Ellipse: `area()`; `approx_perimeter()`; `contains_point(v1: Vertex)`
 - #### RegularPolygon: `perimeter()`; `interior_angle()`; `apothem()`; `area()`
 - #### Polygon: `area()`
 
@@ -63,8 +63,16 @@ If your version is 1.3.1, then write `from pydraw import <what component you wou
 And if your version is prior to 1.3.1, write `from core import <what component you would want to import>`
 
 ## 4. Movement:
-- For 1.3.1 and above: Use the Motion class, with the functions `move_to()`; `move_by()`; `set_velocity()`; `accelerate()`; `stop()`; `check_edge_collision()`; `is_on_screen()`; `update()`.
-Example code:
+- For 1.3.1 and above: Use the Motion class, with the functions: 
+- `move_to(vx: float, vy: float)`; 
+- `move_by(vx: float, vy: float)`; 
+- `set_velocity(vx: float, vy: float)`; 
+- `accelerate(ax: float, ay: float)`; 
+- `stop()`; 
+- `check_edge_collision()`; 
+- `is_on_screen()`; 
+- `update()`.
+##### Example code:
 ```python
 from pydraw import *
 
@@ -116,7 +124,7 @@ while True:
 ```
 - For version 1.2.0 use the `Moveable` class, that has the same movement commands as `Motion`, but whiout the collision stuff,
 and of course, whiout updating(you need to do it manually via pen.clear() ).
-Example code:
+##### Example code:
 ```python
 import os
 import sys
@@ -158,9 +166,40 @@ while True:
     time.sleep(0.01)
 ```
 
-# III - Contribuiting and reporting bugs:
+> [!TIP]
+> If you need to transition from `Moveable` to `Motion`, you just need to add `mov = Motion(shape, pen, vx and vy)`, and it will automaticly
+> change from `Moveable` to `Motion`. And yes if you want `Moveable` instead of `Motion` just don't initialise it.
+> its called backwards compatability :D
+> (i think)
+
+# IV - Sound:
+PyDraw has a sound module, that can play WAV files natively, and can decode and play other formats with FFmpeg installed. You can use the `Speakers` class to play audio
+files. Just create an instance of `Speakers` with the path to your audio file, and call the `play()` method to play it. If your file is not a WAV file, you can call the `decode()` method first with the appropriate file type (e.g., "mp3", "ogg", etc.) to decode it into memory before playing.
+##### Example code:
+```python
+from pydraw import Speakers
+speaker = Speakers("path/to/your/audiofile.mp3")
+speaker.decode("mp3")
+speaker.play()
+```
+
+# V - Keyboard input:
+PyDraw also has a keyboard module that allows you to listen to keyboard input. You can use the `Keyboard` class to listen for key presses. Just create an instance of `Keyboard`, and call the `start_listening()` method to start listening for keyboard input. You can also specify a callback function that will be called whenever a key is pressed.
+##### Example code:
+```python
+from pydraw import Keyboard
+kb = Keyboard()
+kb.start_listening()
+
+while True:
+    if kb.is_pressed(pynput.keyboard.Key.space):
+        print(True)
+    else:
+        print(False)
+```
+# VI - Contribuiting and reporting bugs:
 You can tell me what issues PyDraw has(because i don't test it too often), by going into the issues section of GitHub.
 Also, you can suggest me some new ideas there too. Forking is allowed, and you can fork freely, and even merge with the main repo.
 But if you make your own fork, be sure to give credit.
 
-Made with 💔- ugh i mean 💖 and not 🤖 by Brickboss <3
+Made with 💔- ugh i mean 💖 by Brickboss <3
