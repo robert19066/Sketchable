@@ -1,5 +1,5 @@
 """
-licenced under the GNU Affero General Public License v3.0 (AGPL3)
+licenced under the MIT
 This file handles shape motion, velocity, and screen-edge collision.
 
 Changelog - V1.3:
@@ -52,18 +52,34 @@ class Motion:
         pen: PyPen,
         vx: float = 0.0,
         vy: float = 0.0,
-        friction: float = 1.0,   # 1.0 = no friction; 0.98 = slight drag
+        friction: float = 1.0,
+        collidable=None,
+        CanExitWindow: bool = False
     ):
         if not isinstance(shape, _Moveable):
             raise TypeError(
-                f"Motion requires a _Moveable shape, got {type(shape).__name__}. "
-                "Make sure your shape inherits from _Moveable."
-            )
-        self.shape    = shape
-        self.pen      = pen
-        self.vx       = float(vx)
-        self.vy       = float(vy)
+                f"Motion requires a _Moveable shape, "
+                f"got {type(shape).__name__}"
+        )
+
+        self.shape = shape
+        self.pen = pen
+        self.vx = float(vx)
+        self.vy = float(vy)
         self.friction = float(friction)
+
+        self.collidable = collidable or []
+        self.CanExitWindow = CanExitWindow
+
+    def _bbox(self, shape):
+        verts = shape._apply_transform(shape.get_vertices())
+
+        min_x = min(v[0] for v in verts)
+        max_x = max(v[0] for v in verts)
+        min_y = min(v[1] for v in verts)
+        max_y = max(v[1] for v in verts)
+
+        return min_x, max_x, min_y, max_y
 
     # ── velocity helpers ──────────────────────────────────────────────────────
 
@@ -138,6 +154,32 @@ class Motion:
             hit = True
 
         return hit
+    
+    def check_shape_collision(self):
+        my_minx, my_maxx, my_miny, my_maxy = self._bbox(self.shape)
+
+        for obj in self.collidable:
+
+            other_minx, other_maxx, other_miny, other_maxy = (
+                self._bbox(obj)
+            )
+
+            overlap = (
+                my_maxx >= other_minx and
+                my_minx <= other_maxx and
+                my_maxy >= other_miny and
+                my_miny <= other_maxy
+            )
+
+            if overlap:
+
+                # basic bounce
+                self.vx *= -1
+                self.vy *= -1
+
+                return obj
+
+        return None
 
     def is_on_screen(self) -> bool:
         """Return True when the shape's bounding box is fully inside the screen."""
@@ -152,38 +194,26 @@ class Motion:
 
     # ── main tick ─────────────────────────────────────────────────────────────
 
-    def update(self, dt: float = 0.016, bounce: bool = True) -> "Motion":
-        """
-        One animation tick. Call this once per frame inside your loop,
-        *after* you have drawn the shape.
+    def update(
+        self,
+        dt: float = 0.016,
+        bounce: bool = True
+    ):
 
-        Steps
-        -----
-        1. Move the shape by (vx, vy).
-        2. Apply friction to both velocity components.
-        3. Check edge collisions (and bounce if requested).
-        4. Push the frame to the screen  (pen.screen.update()).
-        5. Sleep for *dt* seconds to cap the frame rate.
-
-        Parameters
-        ----------
-        dt     : seconds to sleep after the frame — controls animation speed.
-        bounce : whether to reverse velocity on edge contact.
-        """
-        # 1 — move
         self.shape.move_by(self.vx, self.vy)
 
-        # 2 — friction
         self.vx *= self.friction
         self.vy *= self.friction
 
-        # 3 — collide
-        self.check_edge_collision(bounce=bounce)
+        if not self.CanExitWindow:
+            self.check_edge_collision(
+                bounce=bounce
+            )
 
-        # 4 — refresh screen
+        self.check_shape_collision()
+
         self.pen.screen.update()
 
-        # 5 — sleep
         time.sleep(dt)
 
         return self

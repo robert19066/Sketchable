@@ -24,32 +24,19 @@ s3.move_to(0, 0)
 
 # ── motion ──────────────────────────────
 
-m1 = Motion(s1, pen, vx=3, vy=2)
-m2 = Motion(s2, pen, vx=-2, vy=3.5)
-m3 = Motion(s3, pen, vx=1.5, vy=-2.5)
+m1 = Motion(s1, pen, vx=3, vy=2, CanExitWindow=False)
+m2 = Motion(s2, pen, vx=-2, vy=3.5, CanExitWindow=False)
+m3 = Motion(s3, pen, vx=1.5, vy=-2.5, CanExitWindow=False)
 
 # ── loop ────────────────────────────────
 
 while True:
     pen.clear()
 
-    pen.draw(s1, color="white", fill=True)
-    pen.draw(s2, color="red", fill=True)
-    pen.draw(s3, color="blue", fill=True)
+    pen.draw(s1,color="white",fill=True)
+    pen.draw(s2,color="red",fill=True)
+    pen.draw(s3,color="blue",fill=True)
 
     m1.update()
     m2.update()
     m3.update()
-
-    # bounce logic
-    if not m1.is_on_screen():
-        m1.vx *= -1
-        m1.vy *= -1
-
-    if not m2.is_on_screen():
-        m2.vx *= -1
-        m2.vy *= -1
-
-    if not m3.is_on_screen():
-        m3.vx *= -1
-        m3.vy *= -1

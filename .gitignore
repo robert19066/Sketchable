@@ -228,3 +228,17 @@ env/
 # Python
 __pycache__/
 *.pyc
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env

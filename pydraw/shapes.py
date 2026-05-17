@@ -1,6 +1,5 @@
-
 """
-licenced under the GNU Affero General Public License v3.0 (AGPL3)
+licenced under the MIT licence
 This file is used for all the datatypes.
 
 This code was written mostly by me, yet I used AI to add math to Triangle, Square and VertexSquare. Also I used it for function descriptions. Rest of the logic was made by me.
@@ -17,9 +16,20 @@ Changelog - V1.3 (crittical bugfix):
 - All _Moveable subclasses now call super().__init__() so _pos, _angle, _scale
   are always initialised. Previously only Square did this, so move_by/rotate_to
   etc. would crash on Triangle, Line, VertexSquare, RegularPolygon and Polygon.
+
+Changelog - V1.4:
+- All vertex-based shapes (Line, Triangle, CustomSquare, Mesh) now accept either
+  individual Vertex arguments OR a single Cluster, making them fully Cluster-compatible.
+- Mesh now stores vertices in a Cluster internally; get_cluster() exposes it.
+- Fixed Circle.getX/getY/contains_point using dead getvX()/getvY() — now use .x/.y.
+- Fixed Mesh.__repr__ incorrectly saying "Polygon".
+- Removed duplicate imports (cos, sin, radians were imported three times).
+- Cluster gains from_list() classmethod and __len__/__iter__ for convenience.
+- Fixed collision logic and gave _Moveable some love and care after so much time.(it got last updated in v1.2.0)
 """
 
 from math import pi, sqrt, tan, cos, sin, radians
+from typing import List, Tuple
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -32,121 +42,254 @@ def _side(a, b) -> float:
 # ── Moveable ──────────────────────────────────────────────────────────────────
 
 class _Moveable:
-    """
-    Helper class for the new Motion class.
+    """Helper class for tracking and applying spatial transformations.
+    TO NOTE: vx and vy are the shape's coordinates.
     """
 
-    def __init__(self):
+    def __init__(self, x: float = 0.0, y: float = 0.0):
+        # We store the base (local) coordinates right inside the moveable object
+        self._base_pos = (float(x), float(y))
         self._pos   = (0.0, 0.0)
         self._angle = 0.0          # degrees, CCW
         self._scale = 1.0
 
     # ── position ──
     def move_to(self, x: float, y: float) -> "_Moveable":
-        """Set world position to absolute (x, y)."""
+        """Set world offset position to absolute (x, y)."""
         self._pos = (float(x), float(y))
         return self
 
     def move_by(self, dx: float, dy: float) -> "_Moveable":
-        """Shift current position by (dx, dy)."""
+        """Shift current world offset by (dx, dy)."""
         self._pos = (self._pos[0] + dx, self._pos[1] + dy)
         return self
 
     # ── rotation ──
     def rotate_to(self, angle: float) -> "_Moveable":
-        """Set rotation to an absolute angle in degrees (CCW)."""
         self._angle = angle % 360
         return self
 
     def rotate_by(self, delta: float) -> "_Moveable":
-        """Add delta degrees (CCW) to current rotation."""
         self._angle = (self._angle + delta) % 360
         return self
 
     # ── scale ──
     def set_scale(self, factor: float) -> "_Moveable":
-        """Set uniform scale (1.0 = original size)."""
         if factor <= 0:
             raise ValueError("Scale must be positive.")
         self._scale = factor
         return self
 
     def scale_by(self, factor: float) -> "_Moveable":
-        """Multiply current scale by factor."""
         if factor <= 0:
             raise ValueError("Scale must be positive.")
         self._scale *= factor
         return self
 
-    # ── reset ──
     def reset_transform(self) -> "_Moveable":
-        """Reset position, rotation, and scale to defaults."""
         self._pos   = (0.0, 0.0)
         self._angle = 0.0
         self._scale = 1.0
         return self
 
-    # ── getters ──
+    # ── Transforming Coordinates ──
     @property
-    def position(self) -> tuple: return self._pos
-
-    @property
-    def angle(self) -> float:
-        return self._angle
-
-    @property
-    def scale(self) -> float: return self._scale
-
-    # ── transform ──
-    def _apply_transform(self, pts: list) -> list:
-        """Apply Scale → Rotate → Translate to a list of (x, y) tuples."""
-        rad  = radians(self._angle)
+    def transformed_position(self) -> Tuple[float, float]:
+        """Calculates the absolute world position after Scale -> Rotate -> Translate."""
+        rad = radians(self._angle)
         c, s = cos(rad), sin(rad)
         tx, ty = self._pos
-        result = []
-        for (x, y) in pts:
+
+        # Apply transforms to the base position
+        x = self._base_pos[0] * self._scale
+        y = self._base_pos[1] * self._scale
+
+        world_x = x * c - y * s + tx
+        world_y = x * s + y * c + ty
+        return (world_x, world_y)
+    
+    def _apply_transform(self, vertices):
+        """
+        Apply transform only to local coordinate tuples.
+        Vertex-based shapes already provide world coords.
+        """
+        if not vertices:
+            return []
+
+        # already world coordinates
+        if isinstance(vertices[0], Vertex):
+            return [(v.x, v.y) for v in vertices]
+
+        rad = radians(self._angle)
+        c, s = cos(rad), sin(rad)
+
+        transformed = []
+
+        for x, y in vertices:
+            # scale
             x *= self._scale
             y *= self._scale
-            result.append((x * c - y * s + tx,
-                           x * s + y * c + ty))
-        return result
+
+            # rotate
+            rx = x * c - y * s
+            ry = x * s + y * c
+
+            # translate
+            rx += self._pos[0]
+            ry += self._pos[1]
+
+            transformed.append((rx, ry))
+
+        return transformed
 
 
 # ── Vertex ────────────────────────────────────────────────────────────────────
 
 class Vertex(_Moveable):
     def __init__(self, x: float, y: float):
-        super().__init__()          # ← bugfix: was missing
-        self.x = x
-        self.y = y
+        super().__init__(x, y)
 
     def __repr__(self):
-        return f"Vertex(x={self.x}, y={self.y})"
+        wx, wy = self.transformed_position
+        return f"Vertex(world_x={wx:.2f}, world_y={wy:.2f})"
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        if not isinstance(other, Vertex):
+            return False
+        return self.transformed_position == other.transformed_position
 
-    def getvX(self): return self.x
-    def getvY(self): return self.y
+    # Pythonic alternative to getvX / getvY
+    @property
+    def x(self) -> float:
+        return self.transformed_position[0]
+
+    @property
+    def y(self) -> float:
+        return self.transformed_position[1]
+
+
+# ── Cluster ───────────────────────────────────────────────────────────────────
+
+class Cluster:
+    """An ordered collection of Vertex objects.
+
+    Accepted anywhere a sequence of vertices is needed. All vertex-based shapes
+    can be constructed directly from a Cluster instead of individual Vertex args.
+    """
+
+    def __init__(self):
+        self.vertexes: List[Vertex] = []
+
+    # ── construction helpers ──
+    @classmethod
+    def from_list(cls, vertices: List[Vertex]) -> "Cluster":
+        """Create a Cluster pre-populated from a list of Vertex objects."""
+        c = cls()
+        for v in vertices:
+            c.add(v)
+        return c
+
+    # ── collection protocol ──
+    def __len__(self) -> int:
+        return len(self.vertexes)
+
+    def __iter__(self):
+        return iter(self.vertexes)
+
+    def __getitem__(self, index: int) -> Vertex:
+        return self.vertexes[index]
+
+    # ── mutation ──
+    def add(self, vertex: Vertex):
+        """Append a Vertex to the cluster."""
+        if not isinstance(vertex, Vertex):
+            raise TypeError("Can only add Vertex instances to Cluster.")
+        self.vertexes.append(vertex)
+
+    def remove(self, index: int):
+        """Delete the vertex at *index* (no return value)."""
+        del self.vertexes[index]
+
+    def pop(self, index: int) -> Vertex:
+        """Remove and return the vertex at *index*."""
+        return self.vertexes.pop(index)
+
+    def shift_to(self, index: int, vx: float, vy: float):
+        """Set vertex at *index* to absolute world position (vx, vy)."""
+        self.vertexes[index].move_to(vx, vy)
+
+    def shift_by(self, index: int, vx: float, vy: float):
+        """Offset vertex at *index* by (vx, vy)."""
+        self.vertexes[index].move_by(vx, vy)
+
+
+# ── internal helper ───────────────────────────────────────────────────────────
+
+def _require_vertex(v, name: str) -> Vertex:
+    """Raise a clear error when a positional arg is not a Vertex."""
+    if not isinstance(v, Vertex):
+        raise TypeError(f"{name} must be a Vertex, got {type(v).__name__}.")
+    return v
+
+
+def _cluster_or_vertices(first, rest, min_count: int, shape_name: str) -> List[Vertex]:
+    """Return a flat list of Vertex objects from either:
+      - a single Cluster  (first=Cluster, rest=())
+      - individual Vertex args (first=Vertex, rest=(Vertex, ...))
+
+    Raises ValueError when fewer than *min_count* vertices are supplied.
+    """
+    if isinstance(first, Cluster):
+        if rest:
+            raise TypeError(
+                f"{shape_name}: pass either a Cluster OR individual Vertex args, not both."
+            )
+        verts = list(first)
+    else:
+        verts = [_require_vertex(first, "first vertex")] + [
+            _require_vertex(v, f"vertex {i+2}") for i, v in enumerate(rest)
+        ]
+    if len(verts) < min_count:
+        raise ValueError(
+            f"{shape_name} needs at least {min_count} vertices, got {len(verts)}."
+        )
+    return verts
 
 
 # ── Line ──────────────────────────────────────────────────────────────────────
 
 class Line(_Moveable):
-    """A line segment between two vertices."""
+    """A line segment between two vertices.
 
-    def __init__(self, start: Vertex, end: Vertex):
-        super().__init__()          # ← bugfix: was missing
-        self.start = start
-        self.end   = end
+    Constructors
+    ------------
+    Line(start, end)           – two Vertex objects
+    Line(cluster)              – Cluster with exactly 2 vertices
+    """
+
+    def __init__(self, start_or_cluster, end: Vertex = None):
+        super().__init__()
+        if isinstance(start_or_cluster, Cluster):
+            if end is not None:
+                raise TypeError("Line: pass either a Cluster OR two Vertex args, not both.")
+            verts = _cluster_or_vertices(start_or_cluster, (), 2, "Line")
+            if len(verts) != 2:
+                raise ValueError(f"Line needs exactly 2 vertices, got {len(verts)}.")
+            self.start, self.end = verts[0], verts[1]
+        else:
+            self.start = _require_vertex(start_or_cluster, "start")
+            self.end   = _require_vertex(end, "end")
 
     def __repr__(self):
         return f"Line({self.start} -> {self.end})"
 
+    def get_cluster(self) -> Cluster:
+        """Return the two endpoints as a Cluster."""
+        return Cluster.from_list([self.start, self.end])
+
     def get_vertices(self) -> list:
-        # Lines are open — no closing point added.
-        return [(self.start.x, self.start.y),
-                (self.end.x,   self.end.y)]
+        """Lines are open — no closing point added."""
+        return [self.start, self.end]
 
     # ── math ──
     def length(self) -> float:
@@ -166,6 +309,12 @@ class Line(_Moveable):
 # ── Circle ────────────────────────────────────────────────────────────────────
 
 class Circle:
+    """Circle defined by a centre Vertex and a radius.
+
+    Note: Circle is not vertex-based in the same sense as the polygon shapes,
+    so it does not support Cluster construction.
+    """
+
     def __init__(self, center: Vertex, radius: float):
         if not isinstance(center, Vertex):
             raise TypeError("center must be a Vertex.")
@@ -176,6 +325,8 @@ class Circle:
         return f"Circle(center={self.center}, radius={self.radius})"
 
     def __eq__(self, other):
+        if not isinstance(other, Circle):
+            return False
         return self.center == other.center and self.radius == other.radius
 
     def get_vertices(self, steps: int = 72) -> list:
@@ -188,9 +339,9 @@ class Circle:
         return pts
 
     # ── getters ──
-    def getX(self):      return self.center.getvX()
-    def getY(self):      return self.center.getvY()
-    def getRadius(self): return self.radius
+    def getX(self) -> float:      return self.center.x
+    def getY(self) -> float:      return self.center.y
+    def getRadius(self) -> float: return self.radius
 
     # ── math ──
     def area(self) -> float:   return pi * self.radius ** 2
@@ -198,30 +349,43 @@ class Circle:
     def diam(self) -> float:   return self.radius * 2
 
     def contains_point(self, vertex: Vertex) -> bool:
-        dx = vertex.getvX() - self.center.getvX()
-        dy = vertex.getvY() - self.center.getvY()
+        dx = vertex.x - self.center.x
+        dy = vertex.y - self.center.y
         return dx * dx + dy * dy <= self.radius ** 2
 
 
 # ── Triangle ──────────────────────────────────────────────────────────────────
 
 class Triangle(_Moveable):
-    def __init__(self, v1: Vertex, v2: Vertex, v3: Vertex):
-        super().__init__()          # ← bugfix: was missing
-        self.v1 = v1
-        self.v2 = v2
-        self.v3 = v3
+    """Triangle defined by three vertices.
+
+    Constructors
+    ------------
+    Triangle(v1, v2, v3)   – three Vertex objects
+    Triangle(cluster)      – Cluster with exactly 3 vertices
+    """
+
+    def __init__(self, v1_or_cluster, v2: Vertex = None, v3: Vertex = None):
+        super().__init__()
+        verts = _cluster_or_vertices(v1_or_cluster, [v for v in (v2, v3) if v is not None], 3, "Triangle")
+        if len(verts) != 3:
+            raise ValueError(f"Triangle needs exactly 3 vertices, got {len(verts)}.")
+        self.v1, self.v2, self.v3 = verts
 
     def __repr__(self):
         return f"Triangle({self.v1}, {self.v2}, {self.v3})"
 
     def __eq__(self, other):
+        if not isinstance(other, Triangle):
+            return False
         return self.v1 == other.v1 and self.v2 == other.v2 and self.v3 == other.v3
 
+    def get_cluster(self) -> Cluster:
+        """Return the three vertices as a Cluster."""
+        return Cluster.from_list([self.v1, self.v2, self.v3])
+
     def get_vertices(self) -> list:
-        return [(self.v1.x, self.v1.y),
-                (self.v2.x, self.v2.y),
-                (self.v3.x, self.v3.y)]
+        return [self.v1, self.v2, self.v3]
 
     # ── math ──
     def side_lengths(self) -> tuple:
@@ -254,9 +418,13 @@ class Triangle(_Moveable):
 
 class Square(_Moveable):
     """Axis-aligned square. Vertices are generated from the local origin (0, 0).
-    Use Movement to position it in the world."""
+    Use Movement to position it in the world.
 
-    def __init__(self, side):
+    Note: Square is side-length-based, not vertex-based. Use CustomSquare if
+    you need to define corners explicitly with Vertex objects or a Cluster.
+    """
+
+    def __init__(self, side: float):
         super().__init__()
         self.side = side
 
@@ -273,24 +441,35 @@ class Square(_Moveable):
     def diagonal(self) -> float:  return self.side * sqrt(2)
 
 
-# ── VertexSquare ──────────────────────────────────────────────────────────────
+# ── CustomSquare ──────────────────────────────────────────────────────────────
 
-class VertexSquare(_Moveable):
-    """Quadrilateral defined by 4 explicit vertices (supports rotation/skew)."""
+class CustomSquare(_Moveable):
+    """Quadrilateral defined by 4 explicit vertices (supports rotation/skew).
 
-    def __init__(self, v1: Vertex, v2: Vertex, v3: Vertex, v4: Vertex):
-        super().__init__()          # ← bugfix: was missing
-        self.v1 = v1
-        self.v2 = v2
-        self.v3 = v3
-        self.v4 = v4
+    Constructors
+    ------------
+    CustomSquare(v1, v2, v3, v4)   – four Vertex objects
+    CustomSquare(cluster)          – Cluster with exactly 4 vertices
+    """
+
+    def __init__(self, v1_or_cluster, v2: Vertex = None,
+                 v3: Vertex = None, v4: Vertex = None):
+        super().__init__()
+        rest = [v for v in (v2, v3, v4) if v is not None]
+        verts = _cluster_or_vertices(v1_or_cluster, rest, 4, "CustomSquare")
+        if len(verts) != 4:
+            raise ValueError(f"CustomSquare needs exactly 4 vertices, got {len(verts)}.")
+        self.v1, self.v2, self.v3, self.v4 = verts
 
     def __repr__(self):
-        return f"VertexSquare({self.v1}, {self.v2}, {self.v3}, {self.v4})"
+        return f"CustomSquare({self.v1}, {self.v2}, {self.v3}, {self.v4})"
+
+    def get_cluster(self) -> Cluster:
+        """Return the four vertices as a Cluster."""
+        return Cluster.from_list([self.v1, self.v2, self.v3, self.v4])
 
     def get_vertices(self) -> list:
-        return [(self.v1.x, self.v1.y), (self.v2.x, self.v2.y),
-                (self.v3.x, self.v3.y), (self.v4.x, self.v4.y)]
+        return [self.v1,self.v2,self.v3,self.v4]
 
     # ── math ──
     def side_lengths(self) -> tuple:
@@ -308,61 +487,25 @@ class VertexSquare(_Moveable):
         return abs(total) / 2
 
 
-# ── Ellipse ───────────────────────────────────────────────────────────────────
+# ── SidePolygon ───────────────────────────────────────────────────────────────
 
-class Ellipse():
-    """Ellipse defined by center Vertex, semi-axis a (horizontal), b (vertical)."""
-
-    def __init__(self, center: Vertex, a: float, b: float):
-        if not isinstance(center, Vertex):
-            raise TypeError("center must be a Vertex.")
-        super().__init__()
-        self.center = center
-        self.a = a
-        self.b = b
-
-    def __repr__(self):
-        return f"Ellipse(center={self.center}, a={self.a}, b={self.b})"
-
-    def get_vertices(self, steps: int = 72) -> list:
-        """Approximate the ellipse as *steps* points (closed)."""
-        pts = []
-        for i in range(steps + 1):
-            angle = 2 * pi * i / steps
-            pts.append((self.center.x + self.a * cos(angle),
-                        self.center.y + self.b * sin(angle)))
-        return pts
-
-    # ── math ──
-    def area(self) -> float:
-        return pi * self.a * self.b
-
-    def approx_perimeter(self) -> float:
-        """Ramanujan's approximation."""
-        h = ((self.a - self.b) ** 2) / ((self.a + self.b) ** 2)
-        return pi * (self.a + self.b) * (1 + (3 * h) / (10 + sqrt(4 - 3 * h)))
-
-    def contains_point(self, vertex: Vertex) -> bool:
-        dx = (vertex.x - self.center.x) / self.a
-        dy = (vertex.y - self.center.y) / self.b
-        return dx * dx + dy * dy <= 1
-
-
-# ── RegularPolygon ────────────────────────────────────────────────────────────
-
-class RegularPolygon(_Moveable):
+class SidePolygon(_Moveable):
     """Regular n-sided polygon. Vertices generated around local origin (0, 0).
-    Use Movement to position it in the world."""
+    Use Movement to position it in the world.
+
+    Note: SidePolygon is side-count/length-based, not vertex-based. Use Mesh
+    if you need to define corners explicitly with Vertex objects or a Cluster.
+    """
 
     def __init__(self, sides: int, side_length: float):
-        super().__init__()          # ← bugfix: was missing
+        super().__init__()
         if sides < 3:
             raise ValueError("A polygon needs at least 3 sides.")
         self.sides       = sides
         self.side_length = side_length
 
     def __repr__(self):
-        return f"RegularPolygon(sides={self.sides}, side_length={self.side_length})"
+        return f"SidePolygon(sides={self.sides}, side_length={self.side_length})"
 
     def get_vertices(self) -> list:
         """Vertices centred on the origin, first point at the top."""
@@ -381,31 +524,52 @@ class RegularPolygon(_Moveable):
         return (self.sides * self.side_length ** 2) / (4 * tan(pi / self.sides))
 
 
-# ── Polygon ───────────────────────────────────────────────────────────────────
+# ── Mesh ──────────────────────────────────────────────────────────────────────
 
-class Polygon(_Moveable):
-    """Arbitrary polygon from a list of Vertex objects."""
+class Mesh(_Moveable):
+    """Arbitrary closed polygon from an explicit list of Vertex objects or a Cluster.
 
-    def __init__(self, vertices: list):
-        super().__init__()          # ← bugfix: was missing
-        if len(vertices) < 3:
-            raise ValueError("A polygon needs at least 3 vertices.")
-        self.vertices = vertices
+    Constructors
+    ------------
+    Mesh([v1, v2, v3, ...])   – list of Vertex objects (3 or more)
+    Mesh(cluster)             – a Cluster (3 or more vertices)
+
+    Vertices are stored internally as a Cluster. Use get_cluster() to retrieve it.
+    """
+
+    def __init__(self, vertices):
+        super().__init__()
+        if isinstance(vertices, Cluster):
+            cluster = vertices
+        elif isinstance(vertices, list):
+            cluster = Cluster.from_list(vertices)
+        else:
+            raise TypeError(
+                "Mesh expects a list of Vertex objects or a Cluster, "
+                f"got {type(vertices).__name__}."
+            )
+        if len(cluster) < 3:
+            raise ValueError("A Mesh needs at least 3 vertices.")
+        self._cluster = cluster
 
     def __repr__(self):
-        return f"Polygon({self.vertices})"
+        return f"Mesh({list(self._cluster.vertexes)})"
+
+    def get_cluster(self) -> Cluster:
+        """Return the internal Cluster (live reference — mutations affect the Mesh)."""
+        return self._cluster
 
     def get_vertices(self) -> list:
-        return [(v.x, v.y) for v in self.vertices]
+        return list(self._cluster)
 
     # ── math ──
     def perimeter(self) -> float:
-        n = len(self.vertices)
-        return sum(_side(self.vertices[i], self.vertices[(i+1) % n])
-                   for i in range(n))
+        verts = self._cluster.vertexes
+        n = len(verts)
+        return sum(_side(verts[i], verts[(i+1) % n]) for i in range(n))
 
     def area(self) -> float:
-        verts = self.vertices
+        verts = self._cluster.vertexes
         n = len(verts)
         total = sum(verts[i].x * verts[(i+1)%n].y -
                     verts[(i+1)%n].x * verts[i].y for i in range(n))

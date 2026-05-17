@@ -27,23 +27,42 @@
 - **Keyboard Input:** The library supports listening for keyboard input, allowing you to create interactive applications.
 - **Sound:** The library also has a sound module that can play WAV files natively, and can decode and play other formats with FFmpeg installed.
 - **Fast updates:** i am updating this library quite often! Especially bugfixes, my ahh can't make some nice code. Bugfixes will be part of most updates, so you can enjoy the smoothest, most stable experience! also we have issues so you can report bugs/suggestions there. 
-- **monke hear monke do:** i listen to feedback and i implement your ideas(but please don't make them too wacky)
 
 ## II - Installation
 1. Via `.url`: Open the latest release, run the .url file and run the command from the site.
 2. Via `pip`: run `pip install pydraw-turtle`, and `pip install --upgrade pydraw-turtle` for updating.
+> [!IMPORTANT]
+> Due to me having a severe skill issue, the dependencies might not install.
+> idk why. So, for now on, every release will have the `requirements.txt` with the list of
+> dependencies. Just install them, and PyDraw will work perfectly fine and dandy.
 
 # III - How2Use:
 
 ## 1. Shapes and their initialisations(one with ※ can be used with the Motion class):
+
+In PyDraw, all shapes rely on the crucial `Vertex`. It is an uni-dimensional imaginary dot with an set of coordonates, from where all primitives are based!
+And in version 1.3.5, the `Cluster` has been added(and the list specifies what shapes are Cluster-compatible) that is an array of `Vertex` elements.
+The methods `Cluster` has are:
+
+- `from_list(list[Vertex])` - Converts an List full of vertexes into an `Cluster`
+- `add(v: Vertex)` - Adds an `Vertex`
+- `remove(index: int)` - Removes an `Vertex` from an index.
+- `pop(index: int)` - Removes and returns an `Vertex` from an index.
+- `shift_to(index: int, vx: float, vy: float)` and `shift_by(same arguments` - Moves to/by an `Vertex` from an index)
+
+
+List of shapes and their initialisations:
+- ※`Line`: `line = Line(v1: Vertex, v2: Vertex/vertexes: Cluster)`
 - ※`Vertex`: `vertex = Vertex(x: float, y: float)`
 - `Circle`: `circle = Circle(center: Vertex, radius: float)`
-- ※`Triangle`: `triangle = Triangle(v1: Vertex, v2: Vertex, v3: Vertex)`
+- ※`Triangle`: `triangle = Triangle(v1: Vertex, v2: Vertex, v3: Vertex/vertexes: Cluster)`
 - ※`Square`: `square = Square(side: int)`
-- ※`VertexSquare`: `vsquare = VertexSquare(v1: Vertex, v2: Vertex, v3: Vertex, v4: Vertex)`
-- `Elipse`: `elipse = Elipse(center: Vertex, a: float, b: float)`
-- ※`RegularPolygon(n-sided shape`: `rpoly = RegularPolygon(sides: int, side_lenght: float)`
-- ※`Polygon:` `poly = Polygon(vertecies: list)` (make a list full of vertecies)
+- ※(formerly VertexSquare)`CustomSquare`: `vsquare = CustomSquare(v1: Vertex, v2: Vertex, v3: Vertex, v4: Vertex/vertexes: Cluster)`
+- ~`Elipse`: `elipse = Elipse(center: Vertex, a: float, b: float)`~ (has been depricated and removed prior to v1.3.5, because its lowk useless.)
+- ※(formerly RegularPolygon)`SidePolygon(n-sided shape)`: `rpoly = SidePolygon(sides: int, side_lenght: float)`
+- ※(formerly Polygon)`Mesh:` `poly = Mesh(vertecies: list/vertecies: Cluster)` (make a list full of vertecies)
+
+
 
 ## 2. Functions:
 (all shapes exept vertex have get_vertices())
@@ -63,6 +82,17 @@ If your version is 1.3.1, then write `from pydraw import <what component you wou
 And if your version is prior to 1.3.1, write `from core import <what component you would want to import>`
 
 ## 4. Movement:
+
+PyDraw also suports movement, using the `Motion` class. To initialise the `Motion` class with an shape that is `Movable`, do:
+`mov = Motion(shape, pen, vx, vy, colidable, CanExitWindow)`
+
+What they mean:
+- `shape` - Any shape that is `Moveable`.
+- `pen: PyPen` - An `PyPen` instance.
+- `vx: float` and `vy: float` - The initial coordonates.
+- `colidable: List` - An list of shapes that the current shape CAN colide(if you don't set it, it will default to None).
+- `CanExitWindow: Bool` - If the shape colides with the window corner.
+
 - For 1.3.1 and above: Use the Motion class, with the functions: 
 - `move_to(vx: float, vy: float)`; 
 - `move_by(vx: float, vy: float)`; 
@@ -72,8 +102,10 @@ And if your version is prior to 1.3.1, write `from core import <what component y
 - `check_edge_collision()`; 
 - `is_on_screen()`; 
 - `update()`.
+- 
 ##### Example code:
 ```python
+
 from pydraw import *
 
 pen = PyPen("square chaos")
@@ -92,35 +124,22 @@ s3.move_to(0, 0)
 
 # ── motion ──────────────────────────────
 
-m1 = Motion(s1, pen, vx=3, vy=2)
-m2 = Motion(s2, pen, vx=-2, vy=3.5)
-m3 = Motion(s3, pen, vx=1.5, vy=-2.5)
+m1 = Motion(s1, pen, vx=3, vy=2, CanExitWindow=False)
+m2 = Motion(s2, pen, vx=-2, vy=3.5, CanExitWindow=False)
+m3 = Motion(s3, pen, vx=1.5, vy=-2.5, CanExitWindow=False)
 
 # ── loop ────────────────────────────────
 
 while True:
     pen.clear()
 
-    pen.draw(s1, color="white", fill=True)
-    pen.draw(s2, color="red", fill=True)
-    pen.draw(s3, color="blue", fill=True)
+    pen.draw(s1,color="white",fill=True)
+    pen.draw(s2,color="red",fill=True)
+    pen.draw(s3,color="blue",fill=True)
 
     m1.update()
     m2.update()
     m3.update()
-
-    # bounce logic
-    if not m1.is_on_screen():
-        m1.vx *= -1
-        m1.vy *= -1
-
-    if not m2.is_on_screen():
-        m2.vx *= -1
-        m2.vy *= -1
-
-    if not m3.is_on_screen():
-        m3.vx *= -1
-        m3.vy *= -1
 ```
 - For version 1.2.0 use the `Moveable` class, that has the same movement commands as `Motion`, but whiout the collision stuff,
 and of course, whiout updating(you need to do it manually via pen.clear() ).

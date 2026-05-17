@@ -1,6 +1,6 @@
 
 """
-licenced under the GNU Affero General Public License v3.0 (AGPL3)
+licenced under the MIT licence
 This file is used for the PyPen.
 
 This code was written by me.(100%)
