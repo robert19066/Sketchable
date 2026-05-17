@@ -167,5 +167,3 @@ class PyPen:
 
         if fill:
             self._turtle.end_fill()
-
-    

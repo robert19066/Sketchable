@@ -24,9 +24,9 @@ s3.move_to(0, 0)
 
 # ── motion ──────────────────────────────
 
-m1 = Motion(s1, pen, vx=3, vy=2, CanExitWindow=False)
-m2 = Motion(s2, pen, vx=-2, vy=3.5, CanExitWindow=False)
-m3 = Motion(s3, pen, vx=1.5, vy=-2.5, CanExitWindow=False)
+m1 = Motion(s1, pen, vx=3, vy=2,collidable=[s2, s3], CanExitWindow=False)
+m2 = Motion(s2, pen, vx=-2, vy=3.5,collidable=[s1, s3], CanExitWindow=False)
+m3 = Motion(s3, pen, vx=1.5, vy=-2.5,collidable=[s1, s2], CanExitWindow=False)
 
 # ── loop ────────────────────────────────
 
