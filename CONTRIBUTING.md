@@ -20,7 +20,7 @@ Stealing things and saying you did this isn't quite nice. Especially due to the 
 - Failing to include the permission notice when distributing the software or substantial parts of it
 - Claiming authorship of the original PMIT-licensed code (false attribution)
 - Removing or altering license headers in source files when redistributing
-- Distributing modified versions without preserving the original MIT license notice
+- Distributing modified versions without preserving the original PMIT license notice
 - Bundling PMIT-licensed code into a larger project while stripping license attribution from included components where required
 - Replacing or omitting the PMIT license in a combined distribution that includes PMIT code
 - Presenting PMIT-licensed code as proprietary without retaining license and copyrihgt notices
