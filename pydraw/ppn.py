@@ -1,6 +1,6 @@
 
 """
-licenced under the MIT licence
+licenced under the PMIT licence
 This file is used for the PyPen.
 
 This code was written by me.(100%)
