@@ -1,6 +1,7 @@
 from .ppn import PyPen, Speed
 from .sound import Speakers
 from .keyboardio import Keyboard
+from .ticky import Ticky
 from .shapes import (
     Circle,
     Triangle,
@@ -28,7 +29,8 @@ __all__ = [
     "Triangle",
     "Mesh",
     "Cluster",
-    "SidePolygon"
+    "SidePolygon",
+    "Ticky"
 ]
 
 # smol bugfix in v1.3.5 because not all functions were exposed as public

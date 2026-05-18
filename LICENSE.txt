@@ -1,4 +1,5 @@
-  MIT License
+MIT License
+(Pydraw version)
 
 Copyright (c) 2026 Brickboss
 
@@ -19,3 +20,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+ALL FILES IN THIS REPOSITORY ARE LICENSED UNDER THE MIT LICENSE.
+ALL. FILES. IN. THIS. REPOSITORY.
+Do not use any of the files in this repostiory in a commercial product without first contacting me and obtaining permission.
+Else, I will personally DMCA strike you and your product, and I will not hesitate to do so.

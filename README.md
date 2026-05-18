@@ -212,4 +212,10 @@ You can tell me what issues PyDraw has(because i don't test it too often), by go
 Also, you can suggest me some new ideas there too. Forking is allowed, and you can fork freely, and even merge with the main repo.
 But if you make your own fork, be sure to give credit.
 
+For this project i used the folowing OSS python libaries:
+- Pyinstaller
+- Pynput
+- Simpleaudio
+(so don't DMCA me)
+
 Made with 💔- ugh i mean 💖 by Brickboss <3
