@@ -219,3 +219,4 @@ For this project i used the folowing OSS python libaries:
 (so don't DMCA me)
 
 Made with 💔- ugh i mean 💖 by Brickboss <3
+Licensed over the Pydraw-MIT(PMIT) licence
