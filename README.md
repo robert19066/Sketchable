@@ -72,7 +72,7 @@ List of shapes and their initialisations:
 - #### Triangle: `side_lenghts()`; `perimeter()`; `area()`; `is_equilateral()`; `is_isosceles()`; `is_right()`
 - #### Square: `area()`; `perimeter()`; `diagonal()`
 - #### VertexSquare: `area()`; `perimeter()`
-- #### Ellipse: `area()`; `approx_perimeter()`; `contains_point(v1: Vertex)`
+- #### ~Ellipse: `area()`; `approx_perimeter()`; `contains_point(v1: Vertex)`~
 - #### RegularPolygon: `perimeter()`; `interior_angle()`; `apothem()`; `area()`
 - #### Polygon: `area()`
 
