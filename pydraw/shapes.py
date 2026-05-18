@@ -1,5 +1,5 @@
 """
-licenced under the MIT licence
+licenced under the PMIT licence
 This file is used for all the datatypes.
 
 This code was written mostly by me, yet I used AI to add math to Triangle, Square and VertexSquare. Also I used it for function descriptions. Rest of the logic was made by me.
