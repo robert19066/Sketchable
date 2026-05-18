@@ -18,6 +18,10 @@
 > Also it's leaving W.I.P(Pre-Release) in version 1.5, so expect a lot of new features and optimizations, and of course, a more stable experience!
 > Also since there are so many projects named PyDraw, submit your idea for a new name: https://forms.gle/8p6pJ7tybQe94ENC8
 
+> [!WARNING]
+> The GitHub versions are used ONLY for showing what has changed, its NOT recomanded
+> to install PyDraw from them, use `pip` instead. v1.0.0 is `pip` exclusive.
+> Please don't. I am using the releases just to note the changelogs. 
 
 
 # I - Capabilities and installation:
