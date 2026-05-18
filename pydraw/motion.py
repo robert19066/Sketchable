@@ -1,5 +1,5 @@
 """
-licenced under the MIT
+licenced under the PMIT
 This file handles shape motion, velocity, and screen-edge collision.
 
 Changelog - V1.3:
