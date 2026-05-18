@@ -11,19 +11,19 @@ But to know if any version is an important one, please use the `m` prefix(ex: v1
 and not an minor release/patch.
 
 ### 2. Licence.
-PyDraw uses the MIT licence, that means you can freely make forks, BUT you must give credit to the official creator(me, Brickboss), as the MIT Licence enforces.
-Stealing things and saying you did this isn't quite nice. Especially due to the fact i am kinda young(13), and stealing kills my motivation. 
+PyDraw uses an modified MIT licence, that means you can freely make forks, BUT you must give credit to the official creator(me, Brickboss), as the PMIT Licence enforces.
+Stealing things and saying you did this isn't quite nice. Especially due to the fact i am kinda young(13), and stealing kills my motivation. The PMIT licence is similar to the MIT one but its more concise, yet it has the same rules.
 
 ##### Licence Violations(don't do this, I BEG YOU.):
 - Removing the original copyright notice from redistributed source or binaries
-- Failing to include the MIT License text in redistributed copies
+- Failing to include the PMIT License text in redistributed copies
 - Failing to include the permission notice when distributing the software or substantial parts of it
-- Claiming authorship of the original MIT-licensed code (false attribution)
+- Claiming authorship of the original PMIT-licensed code (false attribution)
 - Removing or altering license headers in source files when redistributing
 - Distributing modified versions without preserving the original MIT license notice
-- Bundling MIT-licensed code into a larger project while stripping license attribution from included components where required
-- Replacing or omitting the MIT license in a combined distribution that includes MIT code
-- Presenting MIT-licensed code as proprietary without retaining license and copyright notices
+- Bundling PMIT-licensed code into a larger project while stripping license attribution from included components where required
+- Replacing or omitting the PMIT license in a combined distribution that includes PMIT code
+- Presenting PMIT-licensed code as proprietary without retaining license and copyrihgt notices
 - Redistributing compiled/binary versions without including the required license and copyright text
 
 If you ever see someone do such thing, please report in Issues and use the Licence Violation template.
@@ -35,13 +35,6 @@ But if I reject an fork, still I will allow posting it. Also, forks with bugfixe
 ### 4. Issues
 Issues are as important as forks/pull requests, as they provide me new ideas for future versions, feedback from users, and potential bugs that will be fixed.
 Use the templates i put(it makes my work easier)
-
-
-- [CRIT BUG] for an critical bug
-- [BUG] for an bug
-- [BUG FIX] for an fix to an existing bug
-- [FEATURE] for an feature proposal
-- [OTHER] for everything that doesn't fit here.
 
 
 happy tuesday :D
