@@ -1,5 +1,5 @@
 <div align="center"><img src="https://i.postimg.cc/0Q38FLTc/Untitled-design.png" alt="Dev Logo"></div>
-<h1 align="center">Contribuiting Guidelines V1</h1>
+<h1 align="center">Contribuiting Guidelines V1.1</h1>
 
 Here I will explain how to contribute, and the contributing rules and versioning system:
 > [!NOTE]
