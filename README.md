@@ -67,19 +67,6 @@ List of shapes and their initialisations:
 - ※(formerly Polygon)`Mesh:` `poly = Mesh(vertecies: list/vertecies: Cluster)` (make a list full of vertecies)
 
 
-
-## 2. Functions:
-(all shapes exept vertex have get_vertices())
-- #### Vertex: `getvX()`; `getvY()`
-- #### Line: `lenght()`; `midpoint()`, `slope()`
-- #### Circle: `getX()`; `getY()`; `getRadius()`; `area()`; `circ()`; `diam()`; `contains_point(v1: Vertex)`
-- #### Triangle: `side_lenghts()`; `perimeter()`; `area()`; `is_equilateral()`; `is_isosceles()`; `is_right()`
-- #### Square: `area()`; `perimeter()`; `diagonal()`
-- #### VertexSquare: `area()`; `perimeter()`
-- #### ~Ellipse: `area()`; `approx_perimeter()`; `contains_point(v1: Vertex)`~
-- #### RegularPolygon: `perimeter()`; `interior_angle()`; `apothem()`; `area()`
-- #### Polygon: `area()`
-
 ## 3. Importing:
 You can import all the things PyDraw has by writing `from pydraw import *` (not avabile for versions prior to 1.3.2)
 If your version is 1.3.1, then write `from pydraw import <what component you would want>`
