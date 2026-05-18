@@ -26,13 +26,15 @@ Stealing things and saying you did this isn't quite nice. Especially due to the 
 - Presenting MIT-licensed code as proprietary without retaining license and copyright notices
 - Redistributing compiled/binary versions without including the required license and copyright text
 
+If you ever see someone do such thing, please report in Issues and use the Licence Violation template.
+
 ### 3. Forking
 You can freely fork and even merge with PyDraw, and i strongly encourage that. My repos never get pull requests, and you can make an difference!
 But if I reject an fork, still I will allow posting it. Also, forks with bugfixes are an absolute TIMESAVER! I would love that! 
 
 ### 4. Issues
 Issues are as important as forks/pull requests, as they provide me new ideas for future versions, feedback from users, and potential bugs that will be fixed.
-To know what your issue proposes, you can use the folowing tags:
+Use the templates i put(it makes my work easier)
 
 
 - [CRIT BUG] for an critical bug
