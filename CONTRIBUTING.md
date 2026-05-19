@@ -1,4 +1,4 @@
-<div align="center"><img src="https://i.postimg.cc/7LsbtMpb/Chat-GPT-Image-May-19-2026-02-22-37-PM.png" alt="Dev Logo"></div>
+<div align="center"><img src="https://i.postimg.cc/SRWS4WtB/Chat-GPT-Image-May-19-2026-02-22-37-PM.png" alt="Dev Logo"></div>
 <h1 align="center">Contribuiting Guidelines V1.2</h1>
 
 Here I will explain how to contribute, and the contributing rules and versioning system:
