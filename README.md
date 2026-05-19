@@ -17,6 +17,7 @@
 > PyDraw is now an GAME ENGINE!
 > Also it's leaving W.I.P(Pre-Release) in version 1.5, so expect a lot of new features and optimizations, and of course, a more stable experience!
 > Also since there are so many projects named PyDraw, submit your idea for a new name: https://forms.gle/8p6pJ7tybQe94ENC8
+> THANK YALL FOR 200 VIEWS I LUV YOUUUUU 
 
 > [!WARNING]
 > The GitHub versions are used ONLY for showing what has changed, its NOT recomanded
