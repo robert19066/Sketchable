@@ -1,7 +1,7 @@
 <p align="center"> <a href="https://postimg.cc/Pvk711WP"> <img src="https://i.postimg.cc/sx9rq3vc/9e5d0f42-f7f4-4ff1-acb8-3b96980b8d1c-removalai-preview.png" alt="no more image *sob*" /> </a> </p>
 
 
-<h1 align="center">Documentation for Sketchable[Formerly PyDraw Game Engine]</h1>
+<h1 align="center">Documentation for the PyDraw Turtle Extension</h1>
 
 ![license](https://img.shields.io/badge/license-MIT-green?style=flat)
 ![Get It On](https://img.shields.io/badge/Get%20It%20On-PyPi-informational?style=flat&logo=pypi)
@@ -13,16 +13,10 @@
 
 
 
-> [!IMPORTANT]
-> The Sketchable documentation is currently
-> in MAINTANCE for the name migration. You
-> might enocunter "PyDraw" across the files
-> and documentation, the migration is not
-> finished
-
->[!WARNING]
-Sketchable (formerly PyDraw) has officially started the renaming process. This means pydraw-turtle will soon become deprecated. The migration is expected to be fully
-completed in v1.3.8.
+> [!NOTE]
+> Also it's leaving W.I.P(Pre-Release) in version 1.5, so expect a lot of new features and optimizations, and of course, a more stable experience!
+> Also since there are so many projects named PyDraw, submit your idea for a new name: https://forms.gle/8p6pJ7tybQe94ENC8
+> THANK YALL FOR 200 VIEWS I LUV YOUUUUU 
 
 
 
@@ -37,6 +31,7 @@ completed in v1.3.8.
 ## II - Installation
 1. Via `.url`: Open the latest release, run the .url file and run the command from the site.
 2. Via `pip`: run `pip install pydraw-turtle`, and `pip install --upgrade pydraw-turtle` for updating.
+1. 
 > [!IMPORTANT]
 > Due to me having a severe skill issue, the dependencies might not install.
 > idk why. So, for now on, every release will have the `requirements.txt` with the list of
@@ -195,27 +190,39 @@ speaker.decode("mp3")
 speaker.play()
 ```
 
-# V - Keyboard input:
-PyDraw also has a keyboard module that allows you to listen to keyboard input. You can use the `Keyboard` class to listen for key presses. Just create an instance of `Keyboard`, and call the `start_listening()` method to start listening for keyboard input. You can also specify a callback function that will be called whenever a key is pressed.
+# V - Keyboard input[REMADE IN 1.3.7]:
+PyDraw also has a keyboard module that allows you to listen/simulate to keyboard input. You can use the `Keyboard` class to listen for key presses. Just create an instance of `Keyboard`, and call the `start_listening()` method to start listening for keyboard input. You can also specify a callback function that will be called whenever a key is pressed.
 ##### Example code:
 ```python
 from pydraw import Keyboard
 kb = Keyboard()
-kb.start_listening()
+
+kb.is_key_pressed('esc').
+kb.simulate_key_press('l')
+```
+
+- Also in v1.3.7, it got reworked to be both easier, but it now has the ability to simulate key presses. Both Mouse and Keyboard are in externals.py, and were written entirely by me!
+
+# VI - Mouse input[NEW IN 1.3.7]:
+Now, PyDraw can record mouse input, simulate and listen to! Yes, the mouse coordonates are not relative to the turtle canvas, but it will be changed in the near future. after all, its W.I.P.
+```python
+from pydraw import Mouse MouseBtns
+
+mickey_mouse = Mouse()
 
 while True:
-    if kb.is_pressed(pynput.keyboard.Key.space):
-        print(True)
-    else:
-        print(False)
+    if mickey_mouse.isKeyClicked(MouseBtns.MIDDLE):
+        print("damn bro after 1 day it finally works(yay)")
 ```
-# VI - Contribuiting and reporting bugs:
+
+# VII - Contribuiting and reporting bugs:
 You can tell me what issues PyDraw has(because i don't test it too often), by going into the issues section of GitHub.
 Also, you can suggest me some new ideas there too. Forking is allowed, and you can fork freely, and even merge with the main repo.
 But if you make your own fork, be sure to give credit.
 
 For this project i used the folowing OSS python libaries:
-- Pyinstaller
+- Mouse
+- Keyboard
 - Pynput
 - Simpleaudio
 (so don't DMCA me)

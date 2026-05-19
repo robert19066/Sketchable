@@ -94,6 +94,12 @@ class Motion:
         self.vy += ay
         return self
 
+    def deaccelerate(self, ax: float, ay: float) -> "Motion":
+        """Add (ax, ay) to the current velocity — useful for gravity or thrust."""
+        self.vx -= ax
+        self.vy -= ay
+        return self
+
     def stop(self) -> "Motion":
         """Zero out velocity."""
         self.vx = self.vy = 0.0
@@ -109,51 +115,6 @@ class Motion:
 
     # ── collision detection ───────────────────────────────────────────────────
 
-    def check_edge_collision(self, bounce: bool = True) -> bool:
-        """
-        Check whether the shape's *transformed* bounding box has left the
-        screen. The bounding box is built from the actual transformed vertices,
-        so it respects rotation and scale.
-
-        When *bounce* is True the relevant velocity component is reversed with
-        the correct sign so the shape never tunnels through the wall.
-
-        Returns True if at least one edge was hit.
-        """
-        left, right, bottom, top = self._screen_bounds()
-
-        # Use the shape's own transform pipeline so position/rotation/scale
-        # are all taken into account.
-        verts = self.shape._apply_transform(self.shape.get_vertices())
-
-        min_x = min(v[0] for v in verts)
-        max_x = max(v[0] for v in verts)
-        min_y = min(v[1] for v in verts)
-        max_y = max(v[1] for v in verts)
-
-        hit = False
-
-        # Horizontal walls
-        if min_x <= left:
-            if bounce:
-                self.vx = abs(self.vx)      # always push rightward
-            hit = True
-        elif max_x >= right:
-            if bounce:
-                self.vx = -abs(self.vx)     # always push leftward
-            hit = True
-
-        # Vertical walls
-        if min_y <= bottom:
-            if bounce:
-                self.vy = abs(self.vy)      # always push upward
-            hit = True
-        elif max_y >= top:
-            if bounce:
-                self.vy = -abs(self.vy)     # always push downward
-            hit = True
-
-        return hit
     
     def check_shape_collision(self):
         my_minx, my_maxx, my_miny, my_maxy = self._bbox(self.shape)

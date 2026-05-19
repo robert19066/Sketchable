@@ -9,6 +9,7 @@ Changelog(only changes if the file was changed :) )  - V1.3:
 - more functions
 """
 
+from io import TextIOBase
 from time import sleep
 import turtle
 
@@ -41,6 +42,14 @@ class Speed(Enum):
     ALMOST_INSTANT = 10
     INSTANT = 0
 
+class TextAlign(Enum):
+    """
+    Text align
+    """
+    LEFT='left'
+    RIGHT='right'
+    MIDDLE='center'
+
 
 class PyPen:
     def __init__(self, title: str):
@@ -64,31 +73,29 @@ class PyPen:
         self._turtle.color(PenColor)
         self._turtle.pensize(size)
         if (speed == Speed.SLUGGISH):
-            self._turtle.speed(1)
+            self._turtle.speed(Speed.SLUGGISH.value)
         elif (speed == Speed.SLOWER):
-            self._turtle.speed(2)
-        elif (speed == Speed.QUITE_FAST):
-            self._turtle.speed(3)
+            self._turtle.speed(Speed.SLOWER.value)
+        elif (speed == Speed.QUITE_SLOW):
+            self._turtle.speed(Speed.QUITE_SLOW.value)
         elif (speed == Speed.SLOW):
-            self._turtle.speed(4)
+            self._turtle.speed(Speed.SLOW.value)
         elif (speed == Speed.MEDIUM):
-            self._turtle.speed(5)
+            self._turtle.speed(Speed.MEDIUM.value)
         elif (speed == Speed.QUITE_FAST):
-            self._turtle.speed(6)
+            self._turtle.speed(Speed.QUITE_FAST.value)
         elif (speed == Speed.FASTER):
-            self._turtle.speed(7)
+            self._turtle.speed(Speed.FASTER.value)
         elif (speed == Speed.VERY_FAST):
-            self._turtle.speed(8)
+            self._turtle.speed(Speed.VERY_FAST.value)
         elif (speed == Speed.SUPER_FAST):
-            self._turtle.speed(9)
+            self._turtle.speed(Speed.SUPER_FAST.value)
         elif (speed == Speed.ALMOST_INSTANT):
-            self._turtle.speed(10)
+            self._turtle.speed(Speed.ALMOST_INSTANT.value)
         elif (speed == Speed.INSTANT):
-            self._turtle.speed(0)
+            self._turtle.speed(Speed.INSTANT.value)
 
     def clear(self):
-        """
-        """
         self._turtle.clear()
 
     def stopDrawing(self):
@@ -118,6 +125,10 @@ class PyPen:
 
     def tp(self, x: float, y: float):
         self._turtle.goto(x, y)
+
+    def text(text: str, align: TextAlign):
+        turtle.write(text, align=align.value)
+
 
     # ── unified draw ──────────────────────────────────────────────────────────
 

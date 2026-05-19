@@ -1,7 +1,6 @@
-from .ppn import PyPen, Speed
+from .ppn import PyPen, Speed, TextAlign # added textalign in 1.3.7
 from .sound import Speakers
-from .keyboardio import Keyboard
-from .ticky import Ticky
+from .externals import Mouse, Keyboard, MouseBtns # remade in 1.3.7
 from .shapes import (
     Circle,
     Triangle,
@@ -30,7 +29,10 @@ __all__ = [
     "Mesh",
     "Cluster",
     "SidePolygon",
-    "Ticky"
+    "Mouse",
+    "Keyboard",
+    "TextAlign",
+    "MouseBtns"
 ]
 
 # smol bugfix in v1.3.5 because not all functions were exposed as public
