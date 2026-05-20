@@ -1,7 +1,7 @@
 <p align="center"> <a href="https://postimg.cc/Pvk711WP"> <img src="https://i.postimg.cc/sx9rq3vc/9e5d0f42-f7f4-4ff1-acb8-3b96980b8d1c-removalai-preview.png" alt="no more image *sob*" /> </a> </p>
 
 
-<h1 align="center">Documentation for the PyDraw Game Engine(PGE)</h1>
+<h1 align="center">Documentation for Sketchable[Formerly PyDraw Game Engine]</h1>
 
 ![license](https://img.shields.io/badge/license-MIT-green?style=flat)
 ![Get It On](https://img.shields.io/badge/Get%20It%20On-PyPi-informational?style=flat&logo=pypi)
@@ -13,16 +13,17 @@
 
 
 
-> [!NOTE]
-> PyDraw is now an GAME ENGINE!
-> Also it's leaving W.I.P(Pre-Release) in version 1.5, so expect a lot of new features and optimizations, and of course, a more stable experience!
-> Also since there are so many projects named PyDraw, submit your idea for a new name: https://forms.gle/8p6pJ7tybQe94ENC8
-> THANK YALL FOR 200 VIEWS I LUV YOUUUUU 
+> [!IMPORTANT]
+> The Sketchable documentation is currently
+> in MAINTANCE for the name migration. You
+> might enocunter "PyDraw" across the files
+> and documentation, the migration is not
+> finished
 
-> [!WARNING]
-> The GitHub versions are used ONLY for showing what has changed, its NOT recomanded
-> to install PyDraw from them, use `pip` instead. v1.0.0 is `pip` exclusive.
-> Please don't. I am using the releases just to note the changelogs. 
+>[!WARNING]
+Sketchable (formerly PyDraw) has officially started the renaming process. This means pydraw-turtle will soon become deprecated. The migration is expected to be fully
+completed in v1.3.8.
+
 
 
 # I - Capabilities and installation:
@@ -45,7 +46,7 @@
 
 ## 1. Shapes and their initialisations(one with ※ can be used with the Motion class):
 
-In PyDraw, all shapes rely on the crucial `Vertex`. It is an uni-dimensional imaginary dot with an set of coordonates, from where all primitives are based!
+In Sketchable, all shapes rely on the crucial `Vertex`. It is an uni-dimensional imaginary dot with an set of coordonates, from where all primitives are based!
 And in version 1.3.5, the `Cluster` has been added(and the list specifies what shapes are Cluster-compatible) that is an array of `Vertex` elements.
 The methods `Cluster` has are:
 
@@ -69,7 +70,7 @@ List of shapes and their initialisations:
 
 
 ## 3. Importing:
-You can import all the things PyDraw has by writing `from pydraw import *` (not avabile for versions prior to 1.3.2)
+You can import all the things Sketchable has by writing `from pydraw import *` (not avabile for versions prior to 1.3.2)
 If your version is 1.3.1, then write `from pydraw import <what component you would want>`
 And if your version is prior to 1.3.1, write `from core import <what component you would want to import>`
 
