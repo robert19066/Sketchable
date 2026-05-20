@@ -51,7 +51,7 @@ class TextAlign(Enum):
     MIDDLE='center'
 
 
-class PyPen:
+class Sketcher:
     def __init__(self, title: str):
         self.screen = turtle.Screen()
         self.screen.title(title)

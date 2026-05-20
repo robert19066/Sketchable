@@ -1,4 +1,4 @@
-from .ppn import PyPen, Speed, TextAlign # added textalign in 1.3.7
+from .ppn import Sketcher, Speed, TextAlign # added textalign in 1.3.7
 from .sound import Speakers
 from .externals import Mouse, Keyboard, MouseBtns # remade in 1.3.7
 from .shapes import (
@@ -14,19 +14,9 @@ from .shapes import (
 )
 from .motion import Motion
 
-# pydraw/__init__.py
-
-import warnings
-
-warnings.warn(
-    "PyDraw moved to Sketchable! "
-    "Please run: pip install sketchable",
-    DeprecationWarning,
-    stacklevel=2
-)
 
 __all__ = [
-    "PyPen",
+    "Sketcher",
     "Circle",
     "Vertex",
     "CustomSquare",
