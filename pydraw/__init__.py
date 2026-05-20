@@ -14,6 +14,17 @@ from .shapes import (
 )
 from .motion import Motion
 
+# pydraw/__init__.py
+
+import warnings
+
+warnings.warn(
+    "PyDraw moved to Sketchable! "
+    "Please run: pip install sketchable",
+    DeprecationWarning,
+    stacklevel=2
+)
+
 __all__ = [
     "PyPen",
     "Circle",
