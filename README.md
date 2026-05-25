@@ -1,7 +1,7 @@
 <p align="center"> <a href="https://postimg.cc/Pvk711WP"> <img src="https://i.postimg.cc/sx9rq3vc/9e5d0f42-f7f4-4ff1-acb8-3b96980b8d1c-removalai-preview.png" alt="no more image *sob*" /> </a> </p>
 
 
-<h1 align="center">Documentation for the PyDraw Turtle Extension</h1>
+<h1 align="center">D O C U M E N T A T I O N</h1>
 
 ![license](https://img.shields.io/badge/license-MIT-green?style=flat)
 ![Get It On](https://img.shields.io/badge/Get%20It%20On-PyPi-informational?style=flat&logo=pypi)
@@ -13,29 +13,21 @@
 
 
 
-> [!NOTE]
-> Also it's leaving W.I.P(Pre-Release) in version 1.5, so expect a lot of new features and optimizations, and of course, a more stable experience!
-> Also since there are so many projects named PyDraw, submit your idea for a new name: https://forms.gle/8p6pJ7tybQe94ENC8
-> THANK YALL FOR 200 VIEWS I LUV YOUUUUU 
-
-
-
 # I - Capabilities and installation:
 - **Primitives(basic shapes):** Squares, Circles, Triangles, and more, with their geometrical operations(area, perrimeter, etc)
-- **Custom shapes(via Vertex):** Since PyDraw is based on the Vertex(basic x and y coodronates), you can make Polygons(with an unlimited nr of Vertexes), or an VertexSquare(an square made of vertexes)
+- **Custom shapes(via Vertex):** Since Sketchable is based on the Vertex(basic x and y coodronates), you can make Polygons(with an unlimited nr of Vertexes), or an VertexSquare(an square made of vertexes)
 - **Motion, basic physics and collisions:** The Vertex also helps with collisions, making every shape you do colide(of course, only moveable ones). You just define a shape, then you can move/rotate it or resize it!
-- **Keyboard Input:** The library supports listening for keyboard input, allowing you to create interactive applications.
+- **Keyboard/Mouse Input and simulation of it:** The library supports listening/simulating for keyboard/mouse input, allowing you to create interactive applications, and automate/test some tasks by simulating key presses and mouse clicks.
 - **Sound:** The library also has a sound module that can play WAV files natively, and can decode and play other formats with FFmpeg installed.
-- **Fast updates:** i am updating this library quite often! Especially bugfixes, my ahh can't make some nice code. Bugfixes will be part of most updates, so you can enjoy the smoothest, most stable experience! also we have issues so you can report bugs/suggestions there. 
+- **Fast updates:** i am updating this library quite often(almost every day)! Especially bugfixes, my ahh can't make some nice code. Bugfixes will be part of most updates, so you can enjoy the smoothest, most stable experience! also we have issues so you can report bugs/suggestions there. 
 
 ## II - Installation
-1. Via `.url`: Open the latest release, run the .url file and run the command from the site.
-2. Via `pip`: run `pip install pydraw-turtle`, and `pip install --upgrade pydraw-turtle` for updating.
-1. 
+1. Via `pip`: run `pip install sketchable`, and `pip install --upgrade sketchable` for updating.
+2. clone the repo into your project but only if you are lowk deranged who would even do that?
+
 > [!IMPORTANT]
-> Due to me having a severe skill issue, the dependencies might not install.
-> idk why. So, for now on, every release will have the `requirements.txt` with the list of
-> dependencies. Just install them, and PyDraw will work perfectly fine and dandy.
+> The old and depricated `pydraw-turtle` package contains the folowing Sketchable versions: 1.0.0-1.3.7.
+> use the new `sketchable` package for the latest versions, and the old one only if you want to use the old versions, but i don't see why would you want to do that, since the new ones are better in every way possible.
 
 # III - How2Use:
 
@@ -65,13 +57,13 @@ List of shapes and their initialisations:
 
 
 ## 3. Importing:
-You can import all the things Sketchable has by writing `from pydraw import *` (not avabile for versions prior to 1.3.2)
-If your version is 1.3.1, then write `from pydraw import <what component you would want>`
+You can import all the things Sketchable has by writing `from Sketchable import *` (not avabile for versions prior to 1.3.2)
+If your version is 1.3.1, then write `from Sketchable import <what component you would want>`
 And if your version is prior to 1.3.1, write `from core import <what component you would want to import>`
 
 ## 4. Movement:
 
-PyDraw also suports movement, using the `Motion` class. To initialise the `Motion` class with an shape that is `Movable`, do:
+Sketchable also suports movement, using the `Motion` class. To initialise the `Motion` class with an shape that is `Movable`, do:
 `mov = Motion(shape, pen, vx, vy, colidable, CanExitWindow)`
 
 What they mean:
@@ -94,7 +86,7 @@ What they mean:
 ##### Example code:
 ```python
 
-from pydraw import *
+from sketchable import *
 
 pen = PyPen("square chaos")
 pen.initialise("white", 2, Speed.INSTANT, "black")
@@ -180,21 +172,21 @@ while True:
 > (i think)
 
 # IV - Sound:
-PyDraw has a sound module, that can play WAV files natively, and can decode and play other formats with FFmpeg installed. You can use the `Speakers` class to play audio
+Sketchable has a sound module, that can play WAV files natively, and can decode and play other formats with FFmpeg installed. You can use the `Speakers` class to play audio
 files. Just create an instance of `Speakers` with the path to your audio file, and call the `play()` method to play it. If your file is not a WAV file, you can call the `decode()` method first with the appropriate file type (e.g., "mp3", "ogg", etc.) to decode it into memory before playing.
 ##### Example code:
 ```python
-from pydraw import Speakers
+from sketchable import Speakers
 speaker = Speakers("path/to/your/audiofile.mp3")
 speaker.decode("mp3")
 speaker.play()
 ```
 
 # V - Keyboard input[REMADE IN 1.3.7]:
-PyDraw also has a keyboard module that allows you to listen/simulate to keyboard input. You can use the `Keyboard` class to listen for key presses. Just create an instance of `Keyboard`, and call the `start_listening()` method to start listening for keyboard input. You can also specify a callback function that will be called whenever a key is pressed.
+Sketchable also has a keyboard module that allows you to listen/simulate to keyboard input. You can use the `Keyboard` class to listen for key presses. Just create an instance of `Keyboard`, and call the `start_listening()` method to start listening for keyboard input. You can also specify a callback function that will be called whenever a key is pressed.
 ##### Example code:
 ```python
-from pydraw import Keyboard
+from sketchable import Keyboard
 kb = Keyboard()
 
 kb.is_key_pressed('esc').
@@ -204,9 +196,9 @@ kb.simulate_key_press('l')
 - Also in v1.3.7, it got reworked to be both easier, but it now has the ability to simulate key presses. Both Mouse and Keyboard are in externals.py, and were written entirely by me!
 
 # VI - Mouse input[NEW IN 1.3.7]:
-Now, PyDraw can record mouse input, simulate and listen to! Yes, the mouse coordonates are not relative to the turtle canvas, but it will be changed in the near future. after all, its W.I.P.
+Now, Sketchable can record mouse input, simulate and listen to! Yes, the mouse coordonates are not relative to the turtle canvas, but it will be changed in the near future. after all, its W.I.P.
 ```python
-from pydraw import Mouse MouseBtns
+from sketchable import Mouse, MouseBtns
 
 mickey_mouse = Mouse()
 
@@ -216,7 +208,7 @@ while True:
 ```
 
 # VII - Contribuiting and reporting bugs:
-You can tell me what issues PyDraw has(because i don't test it too often), by going into the issues section of GitHub.
+You can tell me what issues Sketchable has(because i don't test it too often), by going into the issues section of GitHub.
 Also, you can suggest me some new ideas there too. Forking is allowed, and you can fork freely, and even merge with the main repo.
 But if you make your own fork, be sure to give credit.
 
@@ -228,4 +220,4 @@ For this project i used the folowing OSS python libaries:
 (so don't DMCA me)
 
 Made with 💔- ugh i mean 💖 by Brickboss <3
-Licensed over the Pydraw-MIT(PMIT) licence - This license is based on the MIT License and is intended to be compatible with it
+Licensed over the Sketchable-MIT(PMIT) licence - This license is based on the MIT License and is intended to be compatible with it

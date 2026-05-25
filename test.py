@@ -1,7 +1,7 @@
 
 """
 licenced under the GNU Affero General Public License v3.0 (AGPL3)
-This file is used for testing the PyDraw Library.                    
+This file is used for testing the Sketchable Library.                    
 """
 
 
