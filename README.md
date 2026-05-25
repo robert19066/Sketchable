@@ -6,10 +6,15 @@
 ![license](https://img.shields.io/badge/license-MIT-green?style=flat)
 ![Get It On](https://img.shields.io/badge/Get%20It%20On-PyPi-informational?style=flat&logo=pypi)
 ![Made with](https://img.shields.io/badge/Made%20with-Python-informational?style=flat&logo=python)
-![Status](https://img.shields.io/badge/Status-Maintained-important?style=flat)
+![Status](https://img.shields.io/badge/Status-Halted-important?style=flat)
 ![Difficulty](https://img.shields.io/badge/Difficulty-Low-success?style=flat)
 ![Type](https://img.shields.io/badge/Type-Game%20Engine%2FLibrary-informational?style=flat)
 ![Made with](https://img.shields.io/badge/Made%20with-Love-red?style=flat&logo=heart)
+
+>[!WARNING]
+>I am stepping down from developing Sketchable, cuz i am bored.
+>I might come back later, or never come back.
+>No more updates for now, ima start smth new!
 
 
 
